@@ -1,0 +1,20 @@
+package org.naer.blog;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+/**
+ * @author Administrator
+ */
+@SpringBootApplication
+@ComponentScan("org.naer")
+@EnableMethodSecurity
+@MapperScan("org.naer.blog.Mapper")
+public class BlogApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BlogApplication.class, args);
+    }
+}

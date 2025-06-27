@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- XML引入的都是XML文档的限制规范,允许的标签顺序与嵌套关系. -->
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- 插件相关 -->
+
+    <!-- default 表示默认使用的环境id -->
+    <environments default="development">
+        <!-- id 是区分的不同环境下配置的数据库连接 -->
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED"><!-- type:[UNPOOLED|POOLED|JUDI] -->
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/blog"/>
+                <property name="username" value="sa"/>
+                <property name="password" value="123456"/>
+                <!-- 配置不同的连接池，属性需要的不同，这里用的是默认所需的属性 -->
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+    </mappers>
+</configuration>
