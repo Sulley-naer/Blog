@@ -43,3 +43,12 @@ buildNumber.properties
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
 
+# Client
+Client/node_modules/*
+Client/dist/*
+
+# Server
+Server/node_modules
+Server/dist
+
+
