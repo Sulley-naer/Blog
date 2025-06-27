@@ -1,0 +1,30 @@
+version: '0.1'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysq
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+    ports:
+      - "3306:3306"
+    volumes:
+      - /app/mysql/config:/etc/mysql/conf.d
+      - /app/mysql/data:/var/lib/mysql
+    networks:
+      - mynet
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /app/redis/data:/data
+      - /app/redis/config/redis-stack.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
