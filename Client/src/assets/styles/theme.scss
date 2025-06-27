@@ -1,0 +1,25 @@
+:root {
+  --primary-color: #42b983;
+  --background-color: #ffffff;
+  --text-color: #333333;
+}
+
+.dark-theme {
+  --primary-color: #00c6ff;
+  --background-color: #1e1e1e;
+  --text-color: #eeeeee;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.button {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
