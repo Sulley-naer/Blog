@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "pinia": "^3.0.3",
     "vite-plugin-pages": "^0.33.1",
     "vue": "^3.5.17",

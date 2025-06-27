@@ -8,17 +8,21 @@
   list-style: none;
   border: none;
   outline: none;
-  font-size: 16px;
 }
 
 
 html{
-  font-size: 100px;
+  font-size: 16px;
 }
 
 #app {
+  max-width: 2560px;
+  min-width: 1200px;
+  position: relative;
+  margin: auto;
   width: 100vw;
   height: 100vh;
   background-color: var(--background-color);
-  overflow: hidden;
+  font-size: 16px;
+  overflow-x: hidden;
 }

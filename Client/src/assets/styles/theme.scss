@@ -1,16 +1,27 @@
 :root {
-  --primary-color: #42b983;
-  --background-color: #ffffff;
+  --background-color: #f4f5f7;
   --text-color: #333333;
+  --text-color-secondary: #666666;
+  --primary-color: #42b983;
+  --header-bg-color: #ffffff;
+  --card-bg-color: #ffffff;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --button-hover-bg: #38a876;
 }
 
-.dark-theme {
+.dark {
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --text-color-secondary: #a0a0a0;
   --primary-color: #00c6ff;
-  --background-color: #1e1e1e;
-  --text-color: #eeeeee;
+  --header-bg-color: #1e1e1e;
+  --card-bg-color: #1e1e1e;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --button-hover-bg: #00b5e6;
 }
 
-body {
+body, #app {
   background-color: var(--background-color);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
