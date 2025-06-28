@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Node.js CI for Client
 
 on:
   push:
@@ -7,31 +7,37 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ./client
+
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [20.x, 22.x] 
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: client/package-lock.json
+
     - name: Install dependencies
-      run: |
-        cd client
-        npm ci
+      run: npm ci
+
+    - name: Run linting checks
+      run: npm run lint
+
     - name: Build the project
-      run: |
-        cd client
-        npm run build --if-present
-    - name: Run tests
-      run: |
-        cd client
-        npm test
+      run: npm run build
+
+    - name: Run unit tests
+      run: npm run test:unit
