@@ -12,10 +12,9 @@ describe('BackToTop.vue', () => {
     appDiv.style.height = '500px'
     appDiv.style.maxHeight = '500px'
     appDiv.style.position = 'relative'
-    // mock scrollTo for jsdom
-    // @ts-ignore
-    appDiv.scrollTo = (..._args: any[]) => {}
     document.body.appendChild(appDiv)
+    // mock scrollTo for jsdom
+    ;(appDiv as any).scrollTo = (..._args: unknown[]) => {}
   })
   afterEach(() => {
     document.body.removeChild(appDiv)
