@@ -19,6 +19,11 @@
   --hljs-class: #c18401;
   --hljs-tag: #e45649;
   --hljs-attribute: #986801;
+
+  // 滚动条
+  --scrollbar-track-color: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb-color: rgba(255, 255, 255, 0.966);
+  --scrollbar-thumb-hover-color: rgba(66, 185, 131, 0.5);
 }
 
 html.dark {
@@ -42,6 +47,10 @@ html.dark {
   --hljs-class: #e5c07b;
   --hljs-tag: #e06c75;
   --hljs-attribute: #d19a66;
+
+  --scrollbar-track-color: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-color: rgba(0, 198, 255, 0.3);
+  --scrollbar-thumb-hover-color: rgba(0, 198, 255, 0.5);
 }
 
 /* 全局过渡效果 */

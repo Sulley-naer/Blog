@@ -11,14 +11,11 @@ const error = ref<string | null>(null)
 onMounted(async () => {
   try {
     const response = await fetch('/doc/Css.md')
-
     if (!response.ok) {
       throw new Error(`无法获取 Markdown 文件，状态码: ${response.status}`)
     }
-
     const markdownText = await response.text()
     htmlContent.value = await renderMarkdownToHtml(markdownText)
-
   } catch (err: any) {
     console.error("处理文章时出错:", err)
     error.value = err.message || '加载或解析文章时出现未知错误。'
@@ -31,7 +28,6 @@ onMounted(async () => {
 <template>
   <div class="post-page">
     <AppHeader />
-
     <main class="post-container">
       <div class="back-link-wrapper">
         <router-link to="/" class="back-link">← 返回首页</router-link>
@@ -49,10 +45,7 @@ onMounted(async () => {
       <div v-else>
         <Transition name="fade-up" appear>
           <article v-if="htmlContent" class="post-content-wrapper">
-
-            <!-- 【核心修复】使用 v-html 指令来渲染HTML字符串 -->
             <div class="post-content" v-html="htmlContent"></div>
-
           </article>
         </Transition>
       </div>
@@ -73,7 +66,6 @@ onMounted(async () => {
     }
   }
 }
-
 
 .post-container {
   max-width: 800px;
@@ -133,6 +125,64 @@ onMounted(async () => {
   :deep(code) {
     font-family: inherit;
   }
+:deep(pre) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-color);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-color);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover-color);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: var(--scrollbar-track-color);
+  }
+}
+
+:deep(*) {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+}
+
+:deep(*::-webkit-scrollbar) {
+  width: 8px;
+  height: 8px;
+}
+
+:deep(*::-webkit-scrollbar-track) {
+  background: var(--scrollbar-track-color);
+  border-radius: 4px;
+}
+
+:deep(*::-webkit-scrollbar-thumb) {
+  background: var(--scrollbar-thumb-color);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+:deep(*::-webkit-scrollbar-thumb:hover) {
+  background: var(--scrollbar-thumb-hover-color);
+}
+
+:deep(*::-webkit-scrollbar-corner) {
+  background: var(--scrollbar-track-color);
+}
 }
 
 .fade-up-enter-active,
