@@ -23,11 +23,11 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install frontend dependencies
-        working-directory: client
-        run: cd .. npm ci
+        working-directory: Client
+        run: npm ci
 
       - name: Build frontend
-        working-directory: client
+        working-directory: Client
         run: npm run build
 
       - name: Setup JDK 17
