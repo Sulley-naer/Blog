@@ -12,6 +12,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Debug path
+        run: ls -al
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,4 +39,4 @@ jobs:
 
       - name: Build backend
         run: ./mvnw package -DskipTests
-        working-directory: Blog/Server
+        working-directory: Server
