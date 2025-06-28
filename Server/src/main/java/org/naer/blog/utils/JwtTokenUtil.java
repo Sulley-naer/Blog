@@ -1,12 +1,11 @@
 package org.naer.blog.utils;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.crypto.Data;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,17 +21,19 @@ public class JwtTokenUtil {
     // JWT有效时间 七天
     private static final long VALIDITY = 1000 * 60 * 60 * 24 * 7;
 
+
     /*
-     * 生成JWT
-     */
-    public static String generateToken(String username) {
+    * 生成JWT
+    * 参数二 用户权限集
+    * */
+    public static String generateToken(String username, Map<String, List<String>> claims) {
         // 获取当前时间戳
         long currentTimeMillis = System.currentTimeMillis();
         // 将时间戳加到subject中
         String subject = username + "_" + currentTimeMillis;
 
         // 构建JWT
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
                 // 设置token 头部标识符
                 .subject(subject)
                 // 设置用户名为JWT的subject
@@ -46,9 +47,15 @@ public class JwtTokenUtil {
                 // 使用HS256算法签名
                 .claim("username", username)
                 // 可选：添加关键数据
-                .signWith(SECRET_KEY)
+                .signWith(SECRET_KEY);
                 // 可选：添加其他数据
-                .compact();
+
+        if(claims != null) {
+            builder = builder.claims(claims);
+        }
+
+        return builder.compact();
+
     }
 
     /*
@@ -106,19 +113,4 @@ public class JwtTokenUtil {
             throw new JwtException("无效Token", e);
         }
     }
-
-    /*
-     * 创建带有属性声明的Token
-     * @Params Map<string,Object>
-     */
-    public static String generateTokenWithClaims(String username, Map<String, Object> customClaims) {
-        return Jwts.builder()
-                .claims(customClaims)
-                .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + VALIDITY))
-                .signWith(SECRET_KEY)
-                .compact();
-    }
-
 }
