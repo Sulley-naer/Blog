@@ -6,12 +6,10 @@ import ViewOptions from './../../index/ViewOptions.vue'
 describe('ViewOptions.vue', () => {
   it('初始渲染正确，默认选中近期更新和列表布局', () => {
     const wrapper = mount(ViewOptions)
-    // 检查视图类型按钮
     const typeBtns = wrapper.findAll('.option-button')
     expect(typeBtns.length).toBe(3)
     expect(typeBtns[0].classes()).toContain('active')
     expect(typeBtns[0].text()).toBe('近期更新')
-    // 检查布局按钮
     const layoutBtns = wrapper.findAll('.layout-button')
     expect(layoutBtns.length).toBe(2)
     expect(layoutBtns[0].classes()).toContain('active')
