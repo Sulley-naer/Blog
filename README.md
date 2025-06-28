@@ -1,7 +1,7 @@
 # ReadMe
 
 > [!TIP]
-> Clone 过来初次先下载依赖项 Client 文件夹内 `npm install` Server 文件夹 mvn install
+> Clone 过来初次先下载依赖项 Client 文件夹内 `npm install` Server 文件夹 `mvn install`
 
 ## 开启服务
 
