@@ -1,0 +1,62 @@
+:deep(pre code.hljs) {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+    color: var(--hljs-text);
+    background: var(--hljs-background);
+    border-radius: 8px; 
+  }
+  
+  :deep(.hljs-comment),
+  :deep(.hljs-quote) {
+    color: var(--hljs-comment);
+    font-style: italic;
+  }
+  
+  :deep(.hljs-variable),
+  :deep(.hljs-template-variable),
+  :deep(.hljs-attr),
+  :deep(.hljs-regexp),
+  :deep(.hljs-link) {
+    color: var(--hljs-tag);
+  }
+  
+  :deep(.hljs-number),
+  :deep(.hljs-literal) {
+    color: var(--hljs-number);
+  }
+  
+  :deep(.hljs-keyword),
+  :deep(.hljs-selector-tag) {
+    color: var(--hljs-keyword);
+  }
+  
+  :deep(.hljs-string),
+  :deep(.hljs-deletion) {
+    color: var(--hljs-string);
+  }
+  
+  :deep(.hljs-title),
+  :deep(.hljs-class .hljs-title) {
+    color: var(--hljs-class);
+  }
+  
+  :deep(.hljs-title.function_) {
+      color: var(--hljs-function);
+  }
+  
+  :deep(.hljs-name) {
+      color: var(--hljs-tag);
+  }
+  
+  :deep(.hljs-attribute) {
+      color: var(--hljs-attribute);
+  }
+  
+  :deep(.hljs-emphasis) {
+    font-style: italic;
+  }
+  
+  :deep(.hljs-strong) {
+    font-weight: bold;
+  }

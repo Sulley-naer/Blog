@@ -3,21 +3,73 @@
   --text-color: #333333;
   --text-color-secondary: #666666;
   --primary-color: #42b983;
+
   --header-bg-color: #ffffff;
   --card-bg-color: #ffffff;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --button-hover-bg: #38a876;
+
+  --spotlight-color: rgba(0, 200, 7, 0.3);
+
+  --card-bg-color-rgb: 255, 255, 255;
+  --text-color-rgb: 51, 51, 51;
+
+  --dropdown-bg: rgba(var(--card-bg-color-rgb), 0.75);
+  --dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --dropdown-border-color: rgba(var(--text-color-rgb), 0.1);
+  --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.05);
+  --dropdown-divider-color: rgba(var(--text-color-rgb), 0.08);
+
+  --hljs-background: #fafafa;
+  --hljs-text: #383a42;
+  --hljs-comment: #a0a1a7;
+  --hljs-keyword: #a626a4;
+  --hljs-string: #50a14f;
+  --hljs-number: #d19a66;
+  --hljs-function: #4078f2;
+  --hljs-class: #c18401;
+  --hljs-tag: #e45649;
+  --hljs-attribute: #986801;
+
+  --scrollbar-track-color: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.4);
 }
 
-.dark {
+html.dark {
   --background-color: #121212;
   --text-color: #e0e0e0;
   --text-color-secondary: #a0a0a0;
   --primary-color: #00c6ff;
+
   --header-bg-color: #1e1e1e;
   --card-bg-color: #1e1e1e;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  --button-hover-bg: #00b5e6;
+  
+  --spotlight-color: rgba(0, 120, 200, 0.3);
+
+  --card-bg-color-rgb: 30, 30, 30;
+  --text-color-rgb: 224, 224, 224;
+
+  --dropdown-bg: rgba(var(--card-bg-color-rgb), 0.8);
+  --dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --dropdown-border-color: rgba(var(--text-color-rgb), 0.15);
+  --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.1);
+  --dropdown-divider-color: rgba(var(--text-color-rgb), 0.12);
+
+  --hljs-background: #282c34;
+  --hljs-text: #abb2bf;
+  --hljs-comment: #5c6370;
+  --hljs-keyword: #c678dd;
+  --hljs-string: #98c379;
+  --hljs-number: #d19a66;
+  --hljs-function: #61afef;
+  --hljs-class: #e5c07b;
+  --hljs-tag: #e06c75;
+  --hljs-attribute: #d19a66;
+
+  --scrollbar-track-color: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.4);
 }
 
 body, #app {

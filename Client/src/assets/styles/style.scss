@@ -1,3 +1,4 @@
+@use 'highlight_';
 * {
   margin: 0;
   padding: 0;
@@ -13,6 +14,14 @@
 
 html{
   font-size: 16px;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0; 
+    background: transparent;
+  }
 }
 
 #app {
@@ -25,4 +34,11 @@ html{
   background-color: var(--background-color);
   font-size: 16px;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0; 
+    background: transparent;
+  }
 }

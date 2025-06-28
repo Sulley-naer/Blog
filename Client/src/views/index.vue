@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import AppHeader from '@/components/AppHeader.vue'
 import HeroSection from '@/components/HeroSection.vue'
 import PostList from '@/components/PostList.vue'
 import AppFooter from '@/components/AppFooter.vue'
+
+defineOptions({
+  name: 'HomePage'
+})
 </script>
 
 <template>
   <div class="home-page">
-    <AppHeader />
     <main class="content-wrapper">
       <HeroSection />
       <PostList />

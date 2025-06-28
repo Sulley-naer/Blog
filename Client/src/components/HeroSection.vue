@@ -1,4 +1,3 @@
-<!-- 推荐路径: src/components/HeroSection.vue -->
 <template>
   <section class="hero-section">
     <h1 class="hero-title">探索、创造、分享</h1>
@@ -24,3 +23,4 @@
   color: var(--text-color-secondary);
 }
 </style>
+
