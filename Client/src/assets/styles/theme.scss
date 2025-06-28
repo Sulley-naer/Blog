@@ -4,12 +4,21 @@
   --text-color-secondary: #666666;
   --primary-color: #42b983;
 
-  --spotlight-color:rgba(0, 200, 7, 0.3);
   --header-bg-color: #ffffff;
   --card-bg-color: #ffffff;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
-  // 代码高亮颜色
+  --spotlight-color: rgba(0, 200, 7, 0.3);
+
+  --card-bg-color-rgb: 255, 255, 255;
+  --text-color-rgb: 51, 51, 51;
+
+  --dropdown-bg: rgba(var(--card-bg-color-rgb), 0.75);
+  --dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --dropdown-border-color: rgba(var(--text-color-rgb), 0.1);
+  --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.05);
+  --dropdown-divider-color: rgba(var(--text-color-rgb), 0.08);
+
   --hljs-background: #fafafa;
   --hljs-text: #383a42;
   --hljs-comment: #a0a1a7;
@@ -21,10 +30,9 @@
   --hljs-tag: #e45649;
   --hljs-attribute: #986801;
 
-  // 滚动条
   --scrollbar-track-color: rgba(0, 0, 0, 0.05);
-  --scrollbar-thumb-color: rgba(255, 255, 255, 0.966);
-  --scrollbar-thumb-hover-color: rgba(66, 185, 131, 0.5);
+  --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.4);
 }
 
 html.dark {
@@ -33,12 +41,21 @@ html.dark {
   --text-color-secondary: #a0a0a0;
   --primary-color: #00c6ff;
 
-  --spotlight-color:rgba(0, 120, 200, 0.3);
   --header-bg-color: #1e1e1e;
   --card-bg-color: #1e1e1e;
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  
+  --spotlight-color: rgba(0, 120, 200, 0.3);
 
-  // 代码高亮颜色
+  --card-bg-color-rgb: 30, 30, 30;
+  --text-color-rgb: 224, 224, 224;
+
+  --dropdown-bg: rgba(var(--card-bg-color-rgb), 0.8);
+  --dropdown-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --dropdown-border-color: rgba(var(--text-color-rgb), 0.15);
+  --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.1);
+  --dropdown-divider-color: rgba(var(--text-color-rgb), 0.12);
+
   --hljs-background: #282c34;
   --hljs-text: #abb2bf;
   --hljs-comment: #5c6370;
@@ -51,11 +68,10 @@ html.dark {
   --hljs-attribute: #d19a66;
 
   --scrollbar-track-color: rgba(255, 255, 255, 0.1);
-  --scrollbar-thumb-color: rgba(0, 198, 255, 0.3);
-  --scrollbar-thumb-hover-color: rgba(0, 198, 255, 0.5);
+  --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.4);
 }
 
-/* 全局过渡效果 */
 body, #app {
   background-color: var(--background-color);
   color: var(--text-color);
