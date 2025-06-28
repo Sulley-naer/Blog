@@ -21,7 +21,7 @@ defineProps<{ post: Post }>()
       <div class="tags">
         <span v-for="tag in post.tags" :key="tag" class="tag">#{{ tag }}</span>
       </div>
-      <router-link :to="`/post/${post.id}`" class="read-more">
+      <router-link :to="`/post/PostDetail`" class="read-more">
         阅读全文 →
       </router-link>
     </footer>

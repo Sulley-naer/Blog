@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { renderMarkdownToHtml } from '@/utils/markdownParser'
 
+
 const htmlContent = ref<string>('')
 const isLoading = ref(true)
 const error = ref<string | null>(null)
@@ -15,9 +16,9 @@ onMounted(async () => {
     }
     const markdownText = await response.text()
     htmlContent.value = await renderMarkdownToHtml(markdownText)
-  } catch (err: any) {
+  } catch (err: Error | unknown) {
     console.error("处理文章时出错:", err)
-    error.value = err.message || '加载或解析文章时出现未知错误。'
+    error.value = (err as Error).message || '加载或解析文章时出现未知错误。'
   } finally {
     isLoading.value = false
   }
