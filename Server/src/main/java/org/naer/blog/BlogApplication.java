@@ -11,8 +11,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
  */
 @SpringBootApplication
 @ComponentScan("org.naer")
-@EnableMethodSecurity
 @MapperScan("org.naer.blog.Mapper")
+@EnableMethodSecurity
 public class BlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(BlogApplication.class, args);
