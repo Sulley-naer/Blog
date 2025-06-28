@@ -61,7 +61,6 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
-/* --- 样式部分完全无需改动 --- */
 .status-indicator {
   text-align: center;
   padding: 4rem 0;
@@ -75,9 +74,6 @@ onMounted(async () => {
   }
 }
 
-.post-page {
-  padding-top: 60px;
-}
 
 .post-container {
   max-width: 800px;
