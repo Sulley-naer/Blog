@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import gsap from 'gsap'
+
 interface Post {
   id: number;
   title: string;
@@ -8,10 +11,38 @@ interface Post {
 }
 
 defineProps<{ post: Post }>()
+
+const cardRef = ref<HTMLElement | null>(null)
+
+const handleMouseEnter = () => {
+  if (!cardRef.value) return
+
+  gsap.killTweensOf(cardRef.value)
+
+  gsap.to(cardRef.value, {
+    y: -5,
+    boxShadow: '0 8px 20px rgba(0, 0, 0, 0.12)',
+    duration: 0.3,
+    ease: 'power2.out'
+  })
+}
+
+const handleMouseLeave = () => {
+  if (!cardRef.value) return
+
+  gsap.killTweensOf(cardRef.value)
+
+  gsap.to(cardRef.value, {
+    y: 0,
+    boxShadow: 'var(--card-shadow)',
+    duration: 0.4,
+    ease: 'power2.out'
+  })
+}
 </script>
 
 <template>
-  <article class="post-card">
+  <article ref="cardRef" class="post-card" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
     <header class="card-header">
       <span class="post-date">{{ post.date }}</span>
       <h2 class="post-title">{{ post.title }}</h2>
@@ -34,12 +65,7 @@ defineProps<{ post: Post }>()
   border-radius: 12px;
   padding: 2rem;
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  }
 }
 
 .post-date {
@@ -54,12 +80,14 @@ defineProps<{ post: Post }>()
   font-weight: 600;
   margin: 0;
   color: var(--text-color);
+  overflow-wrap: break-word;
 }
 
 .post-snippet {
-  margin-top: 1rem;
   color: var(--text-color-secondary);
   line-height: 1.6;
+  overflow-wrap: break-word;
+  flex-grow: 1;
 }
 
 .card-footer {
@@ -72,6 +100,8 @@ defineProps<{ post: Post }>()
 .tags {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+
   .tag {
     font-size: 0.8rem;
     color: var(--text-color-secondary);
@@ -83,8 +113,11 @@ defineProps<{ post: Post }>()
   color: var(--primary-color);
   text-decoration: none;
   transition: color 0.2s ease;
+  flex-shrink: 0;
+
   &:hover {
     text-decoration: underline;
   }
 }
+  
 </style>

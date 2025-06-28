@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount, RouterLinkStub } from '@vue/test-utils'
-import PostCard from '../PostCard.vue'
+import PostCard from './../../index/PostCard.vue'
 
 const post = {
     id: 1,
