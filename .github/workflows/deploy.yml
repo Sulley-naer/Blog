@@ -37,6 +37,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Grant execute permission to mvnw
+        run: chmod +x ./mvnw
+        working-directory: Server
+
       - name: Build backend
         run: ./mvnw package -DskipTests
         working-directory: Server
