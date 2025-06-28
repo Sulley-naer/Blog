@@ -44,7 +44,14 @@ onMounted(async () => {
       <div v-else>
         <Transition name="fade-up" appear>
           <article v-if="htmlContent" class="post-content-wrapper">
-            <div class="post-content" v-html="htmlContent"></div>
+            <div class="post-content">
+              <template v-if="htmlContent.startsWith('<p>')">
+                <div v-for="line in htmlContent.replace(/^<p>|<\/p>$/g, '').split('\\n')" :key="line">{{ line }}</div>
+              </template>
+              <template v-else>
+                <div v-html="htmlContent"></div>
+              </template>
+            </div>
           </article>
         </Transition>
       </div>
