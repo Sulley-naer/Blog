@@ -11,9 +11,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: Blog
-
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -23,11 +20,11 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install frontend dependencies
-        working-directory: Blog/client
+        working-directory: client
         run: npm ci
 
       - name: Build frontend
-        working-directory: Blog/client
+        working-directory: client
         run: npm run build
 
       - name: Setup JDK 17
