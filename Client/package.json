@@ -16,8 +16,6 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "^2.3.1",
-    "@formkit/auto-animate": "^0.8.2",
     "dompurify": "^3.2.6",
     "gsap": "^3.13.0",
     "highlight.js": "^11.11.1",
