@@ -2,7 +2,15 @@ name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
+    paths:
+      - 'Server/**'
+      - 'Client/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'Server/**'
+      - 'Client/**'
 
 jobs:
   build:
@@ -64,6 +72,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
+#      替换 Blog 关键词替换后端发布前缀
       - name: Upload Backend Jar
         uses: actions/upload-release-asset@v1
         with:
@@ -74,6 +83,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
+#      替换 Frontend 词 用于修改前端发布名称
       - name: Upload Frontend Zip
         uses: actions/upload-release-asset@v1
         with:
