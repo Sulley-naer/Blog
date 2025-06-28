@@ -46,7 +46,6 @@ buildNumber.properties
 # Client
 Client/node_modules/*
 Client/dist/*
-Client/package-lock.json
 Client/.env
 
 # Server
