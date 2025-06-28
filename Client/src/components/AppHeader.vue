@@ -120,6 +120,7 @@ toggleLoginStatus()
 <template>
   <header class="app-header">
     <div class="header-inner" ref="headerInnerRef">
+      <div class="glow-layer"></div>
       <div class="header-content">
         <div class="logo">MyCoolBlog</div>
 
@@ -177,12 +178,12 @@ toggleLoginStatus()
                 </a>
                 <a href="#" class="dropdown-item">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16,17 21,12 16,7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                   </svg>
                   我的文章
                 </a>
+
                 <div class="dropdown-divider"></div>
                 <button @click="handleLogout" class="dropdown-item logout-item">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -224,76 +225,83 @@ toggleLoginStatus()
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: background-color 0.3s ease;
 
-  &::before {
-    content: '';
-    position: absolute;
-    left: var(--mouse-x, 50%);
-    top: var(--mouse-y, 50%);
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 600px;
-      pointer-events: none;
-      opacity: var(--spotlight-opacity, 0);
-      transition: opacity 1s ease;
-      background-image: radial-gradient(circle, var(--spotlight-color) 0%, transparent 60%);
+  .glow-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+  
+      &::before {
+        content: '';
+        position: absolute;
+        left: var(--mouse-x, 50%);
+        top: var(--mouse-y, 50%);
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        pointer-events: none;
+        opacity: var(--spotlight-opacity, 0);
+        transition: opacity 1s ease;
+        background-image: radial-gradient(circle, var(--spotlight-color) 0%, transparent 60%);
       }
-      }
-      
-      .header-content {
-        position: relative;
-        z-index: 2;
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        height: 60px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      
-      .logo {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--primary-color);
-      }
-      
-      .navigation {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
         }
-        
+        }
+    
+        .header-content {
+          position: relative;
+          z-index: 2;
+          max-width: 960px;
+          margin: 0 auto;
+          padding: 0 1.5rem;
+          height: 60px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+    
+        .logo {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: var(--primary-color);
+        }
+    
+        .navigation {
+          display: flex;
+          align-items: center;
+          gap: 2rem;
+        }
+    
         .nav-links {
           display: flex;
           align-items: center;
           gap: 1.5rem;
         }
-        
+    
         .nav-actions {
           display: flex;
           align-items: center;
           gap: 1rem;
         }
-        
+    
         .nav-link {
           color: var(--text-color-secondary);
           text-decoration: none;
           font-weight: 500;
           transition: color 0.2s ease;
-        
+    
           &:hover,
           &.active {
             color: var(--primary-color);
           }
         }
-        
+    
         /* 认证按钮样式 */
         .auth-buttons {
           display: flex;
           align-items: center;
           gap: 0.75rem;
         }
-        
+    
         .auth-btn {
           padding: 0.5rem 1rem;
           border-radius: 6px;
@@ -302,35 +310,35 @@ toggleLoginStatus()
           cursor: pointer;
           transition: all 0.2s ease;
           border: 1px solid;
-        
+    
           &.login-btn {
             background: transparent;
             color: var(--text-color);
             border-color: var(--text-color-secondary);
-        
+    
             &:hover {
               color: var(--primary-color);
               border-color: var(--primary-color);
             }
           }
-        
+    
           &.register-btn {
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
-        
+    
             &:hover {
               background: color-mix(in srgb, var(--primary-color) 90%, black);
               border-color: color-mix(in srgb, var(--primary-color) 90%, black);
             }
           }
         }
-        
+    
         /* 用户下拉菜单样式 */
         .user-dropdown-container {
           position: relative;
         }
-        
+    
         .user-profile-btn {
           display: flex;
           align-items: center;
@@ -342,12 +350,12 @@ toggleLoginStatus()
           cursor: pointer;
           transition: background-color 0.2s ease;
           color: var(--text-color);
-        
+    
           &:hover {
             background-color: var(--background-color);
           }
         }
-        
+    
         .user-avatar {
           width: 32px;
           height: 32px;
@@ -355,7 +363,7 @@ toggleLoginStatus()
           object-fit: cover;
           border: 2px solid var(--primary-color);
         }
-        
+    
         .user-name {
           font-weight: 500;
           font-size: 0.875rem;
@@ -364,15 +372,15 @@ toggleLoginStatus()
           text-overflow: ellipsis;
           white-space: nowrap;
         }
-        
+    
         .dropdown-icon {
           transition: transform 0.2s ease;
-        
+    
           &.rotated {
             transform: rotate(180deg);
           }
         }
-        
+    
         .user-dropdown {
           position: absolute;
           top: 100%;
@@ -386,7 +394,7 @@ toggleLoginStatus()
           overflow: hidden;
           z-index: 1000;
         }
-        
+    
         .dropdown-header {
           padding: 1rem;
           display: flex;
@@ -394,37 +402,37 @@ toggleLoginStatus()
           gap: 0.75rem;
           background: var(--background-color);
         }
-        
+    
         .dropdown-avatar {
           width: 40px;
           height: 40px;
           border-radius: 50%;
           object-fit: cover;
         }
-        
+    
         .user-info {
           flex: 1;
           min-width: 0;
         }
-        
+    
         .user-display-name {
           font-weight: 600;
           color: var(--text-color);
           font-size: 0.875rem;
         }
-        
+    
         .user-email {
           color: var(--text-color-secondary);
           font-size: 0.75rem;
           margin-top: 0.125rem;
         }
-        
+    
         .dropdown-divider {
           height: 1px;
           background: var(--background-color);
           margin: 0.5rem 0;
         }
-        
+    
         .dropdown-item {
           display: flex;
           align-items: center;
@@ -438,29 +446,29 @@ toggleLoginStatus()
           border: none;
           cursor: pointer;
           transition: background-color 0.2s ease;
-        
+    
           &:hover {
             background-color: var(--background-color);
           }
-        
+    
           svg {
             flex-shrink: 0;
             color: var(--text-color-secondary);
           }
-        
+    
           &.logout-item {
             color: #e53e3e;
-        
+    
             svg {
               color: #e53e3e;
             }
-        
+    
             &:hover {
               background-color: rgba(229, 62, 62, 0.1);
             }
           }
         }
-        
+    
         .theme-toggle-btn {
           background: none;
           border: none;
@@ -472,22 +480,22 @@ toggleLoginStatus()
           justify-content: center;
           color: var(--text-color);
           transition: background-color 0.2s ease;
-        
+    
           &:hover {
             background-color: var(--background-color);
           }
-        
+    
           .theme-icon {
             width: 22px;
             height: 22px;
             transition: color 0.2s ease;
           }
-        
+    
           &:hover .theme-icon {
             color: var(--primary-color);
           }
         }
-        
+    
         /* 演示按钮样式（实际使用时可移除） */
         .demo-btn {
           padding: 0.25rem 0.5rem;
@@ -497,29 +505,29 @@ toggleLoginStatus()
           border-radius: 4px;
           cursor: pointer;
           color: #666;
-        
+    
           &:hover {
             background: #e0e0e0;
           }
         }
-        
+    
         /* 响应式设计 */
         @media (max-width: 768px) {
           .nav-links {
             display: none;
           }
-        
+    
           .user-name {
             display: none;
           }
-        
+    
           .user-dropdown {
             width: 200px;
           }
-        
+    
           .auth-buttons {
             gap: 0.5rem;
-        
+    
             .auth-btn {
               padding: 0.375rem 0.75rem;
               font-size: 0.8rem;
