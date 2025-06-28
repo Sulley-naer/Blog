@@ -6,6 +6,6 @@ import org.naer.blog.Mapper.pojo.users;
 
 @Mapper
 public interface getUser {
-    @Select("select * from user where name = #{user} and pwd = #{pwd}")
-    users select(String user, String pwd);
+    @Select("select * from user where name = #{name} and pwd = #{pwd}")
+    users select(String name, String pwd);
 }
