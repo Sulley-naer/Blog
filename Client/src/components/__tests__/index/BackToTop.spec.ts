@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import BackToTop from '../../index/BackToTop.vue'
 
-// 模拟 app 容器
 describe('BackToTop.vue', () => {
   let appDiv: HTMLDivElement
   beforeEach(() => {
@@ -13,7 +12,6 @@ describe('BackToTop.vue', () => {
     appDiv.style.maxHeight = '500px'
     appDiv.style.position = 'relative'
     document.body.appendChild(appDiv)
-    // mock scrollTo for jsdom
     ;(appDiv as any).scrollTo = (..._args: unknown[]) => {}
   })
   afterEach(() => {
@@ -27,13 +25,11 @@ describe('BackToTop.vue', () => {
 
   it('滚动超过300px时按钮可见，点击后滚动到顶部', async () => {
     const wrapper = mount(BackToTop)
-    // 模拟滚动
     appDiv.scrollTop = 350
     appDiv.dispatchEvent(new Event('scroll'))
     await wrapper.vm.$nextTick()
     expect(wrapper.find('.back-to-top').exists()).toBe(true)
 
-    // mock scrollTo
     const scrollToSpy = vi.spyOn(appDiv, 'scrollTo').mockImplementation(() => {})
     await wrapper.find('.back-to-top').trigger('click')
     expect(scrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useCounterStore } from '@/stores/counter'
+import Sunny from './Sunny.vue'
+import Moon from './Moon.vue'
 const store = useCounterStore()
 </script>
 
 <template>
     <button @click="store.toggleTheme" class="theme-toggle-btn" aria-label="切换主题">
-        <component :is="store.theme === 'light' ? 'Sunny' : 'Moon'" class="theme-icon" />
+        <component :is="store.theme === 'light' ? Sunny : Moon" class="theme-icon" />
     </button>
 </template>
 
