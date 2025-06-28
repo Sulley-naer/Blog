@@ -3,8 +3,13 @@ name: Node.js CI for Client
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'Client/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'Client/**'
+
 
 jobs:
   build-and-test:
