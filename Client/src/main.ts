@@ -4,7 +4,6 @@ import './assets/styles/highlight.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useCounterStore } from './stores/counter'
-import { watch } from 'vue'
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
 import App from './App.vue'
