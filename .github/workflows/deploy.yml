@@ -1,0 +1,41 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 安装前端依赖
+        working-directory: ./client
+        run: npm ci
+
+      - name: 构建前端
+        working-directory: ./client
+        run: npm run build
+
+      - name: 设置 JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 构建后端 Jar 包
+        working-directory: ./Server
+        run: ./mvnw package -DskipTests
+
+#      - name: 构建 Docker 镜像
+#        run: docker build -t blog-app ./Server
+
