@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
-import AppHeader from '@/components/AppHeader.vue'
 import { renderMarkdownToHtml } from '@/utils/markdownParser'
 
 const htmlContent = ref<string>('')
@@ -27,7 +26,6 @@ onMounted(async () => {
 
 <template>
   <div class="post-page">
-    <AppHeader />
     <main class="post-container">
       <div class="back-link-wrapper">
         <router-link to="/" class="back-link">← 返回首页</router-link>

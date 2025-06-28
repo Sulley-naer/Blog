@@ -5,6 +5,8 @@ import { useCounterStore } from '@/stores/counter'
 const store = useCounterStore()
 const headerInnerRef = ref<HTMLElement | null>(null)
 const proximityThreshold = 300
+const mouseMoveTimer = ref<NodeJS.Timeout | null>(null)
+const inactivityTimeout = 500
 
 const handleMouseMove = (event: MouseEvent) => {
   if (headerInnerRef.value) {
@@ -15,29 +17,51 @@ const handleMouseMove = (event: MouseEvent) => {
     headerInnerRef.value.style.setProperty('--mouse-x', `${x}px`)
     headerInnerRef.value.style.setProperty('--mouse-y', `${y}px`)
 
+    if (mouseMoveTimer.value) clearTimeout(mouseMoveTimer.value)
+
     if (event.clientY < proximityThreshold) {
       headerInnerRef.value.style.setProperty('--spotlight-opacity', '1')
+
+      mouseMoveTimer.value = setTimeout(() => {
+        if (headerInnerRef.value) {
+          headerInnerRef.value.style.setProperty('--spotlight-opacity', '0')
+        }
+      }, inactivityTimeout)
     } else {
       headerInnerRef.value.style.setProperty('--spotlight-opacity', '0')
     }
   }
 }
 
+const handleMouseLeave = () => {
+  if (headerInnerRef.value) {
+    headerInnerRef.value.style.setProperty('--spotlight-opacity', '0')
+  }
+  if (mouseMoveTimer.value) {
+    clearTimeout(mouseMoveTimer.value)
+    mouseMoveTimer.value = null
+  }
+}
+
 onMounted(() => {
   window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('mouseleave', handleMouseLeave)
 })
 
 onUnmounted(() => {
   window.removeEventListener('mousemove', handleMouseMove)
+  window.removeEventListener('mouseleave', handleMouseLeave)
+  if (mouseMoveTimer.value) clearTimeout(mouseMoveTimer.value)
 })
 
 watch(
   () => store.theme,
   (newTheme) => {
-    if (newTheme === 'light' && headerInnerRef.value) {
+    // 主题切换时重置光斑状态
+    if (headerInnerRef.value) {
       headerInnerRef.value.style.setProperty('--spotlight-opacity', '0')
     }
-  },
+  }
 )
 </script>
 
@@ -76,17 +100,15 @@ watch(
   &::before {
     content: '';
     position: absolute;
-    left: var(--mouse-x);
-    top: var(--mouse-y);
-    transform: translate(-50%, -50%);
-    width: 600px;
-    height: 600px;
-    background-image: radial-gradient(circle, rgba(0, 198, 255, 0.2) 0%, transparent 60%);
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-    html.dark & {
+    left: var(--mouse-x, 50%);
+      top: var(--mouse-y, 50%);
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      pointer-events: none;
       opacity: var(--spotlight-opacity, 0);
-    }
+      transition: opacity 1s ease;
+        background-image: radial-gradient(circle, var(--spotlight-color) 0%, transparent 60%);
   }
 }
 
@@ -107,21 +129,25 @@ watch(
   font-weight: bold;
   color: var(--primary-color);
 }
+
 .navigation {
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
+
 .nav-link {
   color: var(--text-color-secondary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
+
   &:hover,
   &.active {
     color: var(--primary-color);
   }
 }
+
 .theme-toggle-btn {
   background: none;
   border: none;
@@ -131,11 +157,13 @@ watch(
   align-items: center;
   justify-content: center;
   color: var(--text-color);
+
   .theme-icon {
     width: 22px;
     height: 22px;
     transition: color 0.2s ease;
   }
+
   &:hover .theme-icon {
     color: var(--primary-color);
   }

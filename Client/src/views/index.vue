@@ -7,7 +7,6 @@ import AppFooter from '@/components/AppFooter.vue'
 
 <template>
   <div class="home-page">
-    <AppHeader />
     <main class="content-wrapper">
       <HeroSection />
       <PostList />
