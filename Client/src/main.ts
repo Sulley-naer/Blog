@@ -4,7 +4,6 @@ import './assets/styles/highlight.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useCounterStore } from './stores/counter'
-import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 
 import App from './App.vue'
 import router from './router'
@@ -13,7 +12,6 @@ import { isRouting } from './stores/routing'
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(autoAnimatePlugin)
 app.use(router)
 
 const counterStore = useCounterStore()

@@ -12,7 +12,9 @@ describe('BackToTop.vue', () => {
     appDiv.style.maxHeight = '500px'
     appDiv.style.position = 'relative'
     document.body.appendChild(appDiv)
-    ;(appDiv as any).scrollTo = (..._args: unknown[]) => {}
+    ;(appDiv as unknown as { scrollTo: (..._args: unknown[]) => void }).scrollTo = (
+      ..._args: unknown[]
+    ) => {}
   })
   afterEach(() => {
     document.body.removeChild(appDiv)
