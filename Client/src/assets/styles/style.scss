@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  list-style: none;
+  border: none;
+  outline: none;
+}
+
+
+html{
+  font-size: 16px;
+}
+
+#app {
+  max-width: 2560px;
+  min-width: 1200px;
+  position: relative;
+  margin: auto;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--background-color);
+  font-size: 16px;
+  overflow-x: hidden;
+}
