@@ -14,4 +14,5 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ name: 'AppSunny' })
 </script>
