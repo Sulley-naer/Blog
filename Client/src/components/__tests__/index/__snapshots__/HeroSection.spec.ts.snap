@@ -1,0 +1,8 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`HeroSection > matches snapshot 1`] = `
+"<section data-v-a5d25278="" class="hero-section">
+  <h1 data-v-a5d25278="" class="hero-title">探索、创造、分享</h1>
+  <p data-v-a5d25278="" class="hero-subtitle">一个记录技术思考与生活灵感的空间。</p>
+</section>"
+`;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import HeroSection from '../HeroSection.vue'
+import HeroSection from './../../index/HeroSection.vue'
 
 describe('HeroSection', () => {
     it('renders the hero section', () => {
