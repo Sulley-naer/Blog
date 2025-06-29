@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, watch, type Ref } from 'vue'
+import { onMounted, onUnmounted, watch, type Ref } from 'vue'
 
 export function useMouseTrail(canvasRef: Ref<HTMLCanvasElement | null>, isDarkMode: Ref<boolean>) {
   let animationFrameId: number
