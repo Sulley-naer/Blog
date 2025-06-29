@@ -1,8 +1,19 @@
 import { onMounted, onUnmounted, watch, type Ref } from 'vue'
 
+export interface TrailParticle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  life: number
+  decay: number
+  size: number
+  color: string
+}
+
 export function useMouseTrail(canvasRef: Ref<HTMLCanvasElement | null>, isDarkMode: Ref<boolean>) {
   let animationFrameId: number
-  let trailParticles: any[] = []
+  let trailParticles: TrailParticle[] = []
   let mouseX = 0
   let mouseY = 0
 

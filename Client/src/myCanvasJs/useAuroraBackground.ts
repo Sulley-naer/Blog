@@ -1,11 +1,21 @@
 import { onMounted, onUnmounted, watch, type Ref } from 'vue'
 
+export interface Star {
+  x: number
+  y: number
+  radius: number
+  opacity: number
+  twinkleSpeed: number
+  vx: number
+  vy: number
+}
+
 export function useAuroraBackground(
   canvasRef: Ref<HTMLCanvasElement | null>,
   isDarkMode: Ref<boolean>,
 ) {
   let animationFrameId: number
-  let stars: any[] = []
+  let stars: Star[] = []
 
   const resizeCanvas = () => {
     if (!canvasRef.value) return
