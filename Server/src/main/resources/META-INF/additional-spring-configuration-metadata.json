@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "email.port",
+      "type": "java.lang.Integer",
+      "description": "Description for email.port."
+    },
+    {
+      "name": "email.step",
+      "type": "java.lang.String",
+      "description": "Description for email.step."
+    },
+    {
+      "name": "email.code",
+      "type": "java.lang.String",
+      "description": "Description for email.code."
+    },
+    {
+      "name": "email.user",
+      "type": "java.lang.String",
+      "description": "Description for email.user."
+    }
+  ] }

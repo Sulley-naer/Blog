@@ -13,15 +13,25 @@ spring:
       name: user
       password: 1234
 
-  mybatis:
-    type-aliases-package: org.naer.blog.Mapper.pojo
-    configuration:
-      map-underscore-to-camel-case: true
-
   data:
     redis:
       url: redis://192.168.17.128:6379
       port: 6379
 
+  mail:
+    ssl:
+      enabled: true
+    port:
+
 server:
   port: 8080
+
+mybatis:
+  type-aliases-package: org.naer.blog.Mapper.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  charset:
+    file: utf-8
+    console: UTF-8

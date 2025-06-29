@@ -1,21 +1,24 @@
 package org.naer.blog.Controller;
 
 import jakarta.annotation.Resource;
+import lombok.Data;
+import lombok.Setter;
 import org.naer.blog.Mapper.pojo.users;
 import org.naer.blog.Services.UserSrvices;
 import org.naer.blog.utils.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
 
 /**
  * @author Administrator
@@ -31,6 +34,8 @@ public class Main {
 
     @Resource
     private UserSrvices userSrvices;
+    @Autowired
+    private org.naer.blog.utils.emailUtil emailUtil;
 
     @RequestMapping("/")
     public String app() {
@@ -39,7 +44,7 @@ public class Main {
 
     @RequestMapping("/hello")
     @PreAuthorize("hasAnyAuthority('update')")
-    //TODO待修复 PreAuthorize 注解无效
+
     public String hello() {
         return "hello world";
     }
@@ -48,8 +53,7 @@ public class Main {
     @PreAuthorize("permitAll()")
     public ResponseEntity<?> test(String name, String pwd) {
         users res = userSrvices.login(name, pwd);
-
-        Map<String, List<String>> authority = new HashMap<>();
+        Map<String, Object> authority = new HashMap<>();
 
         if (res != null) {
             //验证权限
@@ -65,6 +69,7 @@ public class Main {
                 permissionSets.add("update");
             }
             //存放权限至集合
+            authority.put("email", res.getEmail());
             authority.put("permission", permissionSets);
 
             //生成token 带有权限
@@ -80,5 +85,51 @@ public class Main {
         }
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/registered")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<?> register(String name, String pwd,String email, String captcha) {
+        String key = "Blog_reg_captcha_" + email;
+        String codeInRedis = stringRedisTemplate.opsForValue().get(key);
+
+        if (codeInRedis == null) {
+            return ResponseEntity.badRequest().body("验证码已过期或不存在");
+        }
+
+        if (!codeInRedis.equals(captcha)) {
+            return ResponseEntity.badRequest().body("验证码错误");
+        }
+
+        // 验证通过，执行注册
+        userSrvices.insert(name, pwd,email);
+
+        // 可选：注册成功后删除验证码
+        stringRedisTemplate.delete(key);
+
+        return ResponseEntity.ok("注册成功");
+    }
+
+    @PostMapping("/registered/captcha")
+    @PreAuthorize("permitAll()")
+    public boolean captcha(@RequestBody captchaRequest data) {
+        String code = String.valueOf(1000 + new Random().nextInt(9000));
+
+        logger.info("发送验证码至:{}", data.email);
+
+        // 可设置过期时间
+        stringRedisTemplate.opsForValue().set("Blog_reg_captcha_" + data.email, code, Duration.ofMinutes(5));
+        return emailUtil.sendCaptchaEmail(data.email, code);
+    }
+
+    @Data
+    static class captchaRequest {
+
+        @Setter
+        private String email;
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
     }
 }
