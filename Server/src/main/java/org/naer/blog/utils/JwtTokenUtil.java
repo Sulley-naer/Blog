@@ -26,7 +26,7 @@ public class JwtTokenUtil {
     * 生成JWT
     * 参数二 用户权限集
     * */
-    public static String generateToken(String username, Map<String, List<String>> claims) {
+    public static String generateToken(String username, Map<String, Object> claims) {
         // 获取当前时间戳
         long currentTimeMillis = System.currentTimeMillis();
         // 将时间戳加到subject中
