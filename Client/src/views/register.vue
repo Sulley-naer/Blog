@@ -84,7 +84,8 @@
     </div>
   </template>
   
-  <script setup lang="ts">
+<script setup lang="ts">
+defineOptions({ name: 'RegisterPage' })
   import { ref, onMounted, computed, watch } from 'vue'
   import { gsap } from 'gsap'
   import { useCounterStore } from '@/stores/counter'

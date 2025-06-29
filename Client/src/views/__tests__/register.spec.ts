@@ -56,12 +56,12 @@ describe('register.vue', () => {
     await wrapper.find('input#verificationCode').setValue('123456')
     await wrapper.find('form.step-form').trigger('submit.prevent')
     // registrationStep 变为 2，step-two 显示
-    expect((wrapper.vm as any).registrationStep).toBe(2)
+    expect((wrapper.vm as { registrationStep: number }).registrationStep).toBe(2)
   })
 
   it('第二步渲染密码输入', async () => {
     // 直接设置 registrationStep
-    (wrapper.vm as any).registrationStep = 2
+    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
     await wrapper.vm.$nextTick()
     expect(wrapper.find('input#password').exists()).toBe(true)
     expect(wrapper.find('input#confirmPassword').exists()).toBe(true)
@@ -69,25 +69,25 @@ describe('register.vue', () => {
   })
 
   it('密码校验不通过时显示错误提示', async () => {
-    (wrapper.vm as any).registrationStep = 2
+    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
     await wrapper.find('input#password').setValue('123')
     await wrapper.find('input#confirmPassword').setValue('123')
     await wrapper.find('form.step-form').trigger('submit.prevent')
-    expect((wrapper.vm as any).passwordError).not.toBe('')
+    expect((wrapper.vm as { passwordError: string }).passwordError).not.toBe('')
   })
 
   it('两次密码不一致时显示错误提示', async () => {
-    (wrapper.vm as any).registrationStep = 2
+    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
     await wrapper.find('input#password').setValue('12345678a')
     await wrapper.find('input#confirmPassword').setValue('87654321a')
     await wrapper.find('form.step-form').trigger('submit.prevent')
-    expect((wrapper.vm as any).confirmPasswordError).not.toBe('')
+    expect((wrapper.vm as { confirmPasswordError: string }).confirmPasswordError).not.toBe('')
   })
 
   it('点击上一步按钮返回第一步', async () => {
-    (wrapper.vm as any).registrationStep = 2
+    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
     await wrapper.vm.$nextTick()
     await wrapper.find('button.secondary-btn').trigger('click')
-    expect((wrapper.vm as any).registrationStep).toBe(1)
+    expect((wrapper.vm as { registrationStep: number }).registrationStep).toBe(1)
   })
 })

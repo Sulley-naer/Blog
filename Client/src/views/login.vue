@@ -65,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+defineOptions({ name: 'LoginPage' })
 import { ref, onMounted, computed, nextTick } from 'vue'
 import { gsap } from 'gsap'
 import { useCounterStore } from '@/stores/counter'

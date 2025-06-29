@@ -43,18 +43,18 @@ describe('login.vue', () => {
     expect(wrapper.find('input#password').exists()).toBe(true)
     expect(wrapper.find('button.login-btn').exists()).toBe(true)
     // 默认是密码模式
-    expect((wrapper.vm as any).loginMode).toBe('password')
+    expect((wrapper.vm as { loginMode: string }).loginMode).toBe('password')
   })
 
   it('切换到邮箱验证码模式', async () => {
     // 触发切换
-    ;(wrapper.vm as any).loginMode = 'emailCode'
+    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
     await wrapper.vm.$nextTick()
     // 断言验证码输入框出现
     expect(wrapper.find('input#verificationCode').exists()).toBe(true)
     // 密码输入框消失
     expect(wrapper.find('input#password').exists()).toBe(false)
-    expect((wrapper.vm as any).loginMode).toBe('emailCode')
+    expect((wrapper.vm as unknown as { loginMode: string }).loginMode).toBe('emailCode')
   })
 
   it('输入用户名和密码并提交（密码模式）', async () => {
@@ -68,7 +68,7 @@ describe('login.vue', () => {
   })
 
   it('输入用户名和验证码并提交（邮箱验证码模式）', async () => {
-    ;(wrapper.vm as any).loginMode = 'emailCode'
+    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
     await wrapper.vm.$nextTick()
     const usernameInput = wrapper.find('input#username')
     const codeInput = wrapper.find('input#verificationCode')
@@ -94,13 +94,13 @@ describe('login.vue', () => {
   })
 
   it('发送验证码按钮可用', async () => {
-    ;(wrapper.vm as any).loginMode = 'emailCode'
+    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
     await wrapper.vm.$nextTick()
     const btn = wrapper.find('button.send-code-btn')
     expect(btn.exists()).toBe(true)
     expect(btn.attributes('disabled')).toBeUndefined()
     await btn.trigger('click')
     // 发送后按钮应禁用
-    expect((wrapper.vm as any).isSendingCode).toBe(true)
+    expect((wrapper.vm as unknown as { isSendingCode: boolean }).isSendingCode).toBe(true)
   })
 })

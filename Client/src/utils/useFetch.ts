@@ -4,13 +4,10 @@ const _url = "https://api.example.com"
 
 export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
   timeout?: number // 超时时间（毫秒）
-  body?: any // 允许对象字面量
+  body?: unknown // 允许对象字面量
 }
 
-export function useFetch<T = any>(
-  url: string,
-  options: UseFetchOptions = {}
-) {
+export function useFetch<T = unknown>(url: string, options: UseFetchOptions = {}) {
   const data = ref<T | null>(null)
   const error = ref<Error | null>(null)
   const loading = ref(false)
@@ -20,7 +17,7 @@ export function useFetch<T = any>(
     error.value = null
     data.value = null
     const { timeout, body, headers, ...rest } = options
-    let fetchOptions: RequestInit = { ...rest }
+    const fetchOptions: RequestInit = { ...rest }
     let controller: AbortController | undefined
     let timer: ReturnType<typeof setTimeout> | undefined
     // 自动 JSON.stringify body
@@ -28,10 +25,17 @@ export function useFetch<T = any>(
       fetchOptions.body = JSON.stringify(body)
       fetchOptions.headers = {
         'Content-Type': 'application/json',
-        ...(headers || {})
+        ...headers,
       }
     } else if (body !== undefined) {
-      fetchOptions.body = body as any
+      fetchOptions.body = body as
+        | string
+        | Blob
+        | ArrayBufferView
+        | ArrayBuffer
+        | FormData
+        | URLSearchParams
+        | ReadableStream<Uint8Array>
       if (headers) fetchOptions.headers = headers
     } else if (headers) {
       fetchOptions.headers = headers
@@ -44,18 +48,25 @@ export function useFetch<T = any>(
       }, timeout)
     }
     try {
-      const response = await fetch(_url+url, fetchOptions)
+      const response = await fetch(_url + url, fetchOptions)
       if (!response.ok) throw new Error(response.statusText)
       // 自动按 content-type 判断是否 json
       const contentType = response.headers.get('content-type')
       if (contentType && contentType.includes('application/json')) {
         data.value = await response.json()
       } else {
-        // @ts-ignore
+        // fetch返回类型不确定，text fallback
         data.value = await response.text()
       }
-    } catch (err: any) {
-      error.value = err
+    } catch (err) {
+      // 兼容多种异常类型
+      if (err instanceof Error) {
+        error.value = err
+      } else if (typeof err === 'string') {
+        error.value = new Error(err)
+      } else {
+        error.value = new Error('Unknown error')
+      }
     } finally {
       loading.value = false
       if (timer) clearTimeout(timer)
