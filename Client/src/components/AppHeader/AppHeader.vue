@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import HeaderAuth from './HeaderAuth.vue'
 import ThemeToggle from './ThemeToggle.vue'
+import router from '@/router'
 
 const store = useCounterStore()
 const headerInnerRef = ref<HTMLElement | null>(null)
@@ -10,7 +11,7 @@ const proximityThreshold = 300
 const mouseMoveTimer = ref<NodeJS.Timeout | null>(null)
 const inactivityTimeout = 500
 
-const isLoggedIn = ref(true) 
+const isLoggedIn = ref(false)
 const user = ref({
   name: '张三',
   avatar: computed(() => {
@@ -51,8 +52,6 @@ const handleMouseLeave = () => {
   }
 }
 
-const handleLogin = () => console.log('打开登录弹窗')
-const handleRegister = () => console.log('打开注册弹窗')
 const handleLogout = () => {
   isLoggedIn.value = false
   console.log('用户已退出登录')
@@ -84,13 +83,12 @@ watch(() => store.theme, () => {
         <div class="logo">MyCoolBlog</div>
         <nav class="navigation">
           <div class="nav-links">
-            <a href="#" class="nav-link active">首页</a>
+            <a href="#" class="nav-link active" @click="() => { router.push('/') }">首页</a>
             <a href="#" class="nav-link">归档</a>
             <a href="#" class="nav-link">关于</a>
           </div>
           <div class="nav-actions">
-            <HeaderAuth :is-logged-in="isLoggedIn" :user="user" @login="handleLogin" @register="handleRegister"
-              @logout="handleLogout" />
+            <HeaderAuth :is-logged-in="isLoggedIn" :user="user" @logout="handleLogout" />
             <ThemeToggle />
           </div>
         </nav>

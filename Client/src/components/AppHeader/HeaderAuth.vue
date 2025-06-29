@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router' // 1. 导入 useRouter
 import UserProfile from './UserProfile.vue'
 
 defineProps<{
@@ -6,13 +7,22 @@ defineProps<{
     user: { name: string; avatar: string; email: string }
 }>()
 
-const emit = defineEmits(['login', 'register', 'logout'])
+const emit = defineEmits(['register', 'logout'])
+
+const router = useRouter()
+
+const handleLoginClick = () => {
+    router.push('/login')
+}
+const handleRegisterClick = () => {
+    router.push('/register')
+}
 </script>
 
 <template>
     <div v-if="!isLoggedIn" class="auth-buttons">
-        <button @click="emit('login')" class="auth-btn login-btn">登录</button>
-        <button @click="emit('register')" class="auth-btn register-btn">注册</button>
+        <button @click="handleLoginClick" class="auth-btn login-btn">登录</button>
+        <button @click="handleRegisterClick" class="auth-btn register-btn">注册</button>
     </div>
     <UserProfile v-else :user="user" @logout="emit('logout')" />
 </template>

@@ -33,6 +33,21 @@
   --scrollbar-track-color: rgba(0, 0, 0, 0.05);
   --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
   --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.4);
+
+  --aurora-color-1: rgba(66, 185, 131, 0.3);
+  --aurora-color-2: rgba(51, 51, 51, 0.2);
+
+  --trail-color-1: #ffffff;
+  --trail-color-2: #87ceeb;
+  --trail-color-3: #9370db;
+  --trail-color-4: #4169e1;
+  
+  --firework-color-1: #ff6b6b;
+  --firework-color-2: #4ecdc4;
+  --firework-color-3: #45b7d1;
+  --firework-color-4: #96ceb4;
+  --firework-color-5: #ffeaa7;
+  --firework-color-6: #fd79a8;
 }
 
 html.dark {
@@ -70,6 +85,14 @@ html.dark {
   --scrollbar-track-color: rgba(255, 255, 255, 0.1);
   --scrollbar-thumb-color: rgba(255, 255, 255, 0.2);
   --scrollbar-thumb-hover-color: rgba(255, 255, 255, 0.4);
+
+  --aurora-color-1: rgba(0, 198, 255, 0.4);
+  --aurora-color-2: rgba(224, 224, 224, 0.2);
+
+  --trail-color-1: #ffffff;
+  --trail-color-2: #00c6ff;
+  --trail-color-3: #9370db;
+  --trail-color-4: #4169e1;
 }
 
 body, #app {
