@@ -100,13 +100,13 @@ public class Main {
             return ResponseEntity.badRequest().body("验证码错误");
         }
 
-        // 验证通过，执行注册
-        if (userSrvices.insert(name, pwd, email)) {
+        try {
+            userSrvices.insert(name, pwd, email);
             // 可选：注册成功后删除验证码
             stringRedisTemplate.delete(key);
             logger.info("User '{}' registered successfully.", name);
             return ResponseEntity.ok("注册成功");
-        } else {
+        } catch (Exception e) {
             return ResponseEntity.status(303).body("用户名已存在");
         }
     }
