@@ -33,7 +33,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         //开放全部使用注解声明
                         .anyRequest().permitAll())
-                .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
                 // 如果需要使用 HTTP 基本认证，可以加上此行
 
