@@ -34,6 +34,8 @@ export default defineConfig({
       },
     },
   },
+
+  //TODO 把这里的服务器IP用 env 文件变量来配置,不会bing vite env 文件读取 还能优化到 开发与生产环境自动切换地址
   server: {
     host: '0.0.0.0',
     cors: {

@@ -1,7 +1,7 @@
 import { useLazyFetch } from '@/utils/useFetch'
 
-export const Login = (userName: string,password:string) => {
-  if (!userName&&!password) {
+export const Login = (userName: string, password: string) => {
+  if (!userName && !password) {
     throw new Error('用户名或密码不能为空')
   }
   return useLazyFetch('/login', {

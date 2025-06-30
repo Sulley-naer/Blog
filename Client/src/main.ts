@@ -30,6 +30,8 @@ initializeTheme()
 
 document.documentElement.className = counterStore.theme
 
+//TODO 加载过度动画
+
 router.beforeEach((to, from, next) => {
   isRouting.value = true
   next()
