@@ -36,5 +36,17 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
+    cors: {
+      origin: ['ra6368f6.natappfree.cc'],
+      credentials: true,
+    },
+    allowedHosts: ['ra6368f6.natappfree.cc'],
+    proxy: {
+      '/api': {
+        target: 'http://ra6368f6.natappfree.cc',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
 })
