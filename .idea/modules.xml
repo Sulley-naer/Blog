@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Blog.iml" filepath="$PROJECT_DIR$/.idea/Blog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Server/Blog.iml" filepath="$PROJECT_DIR$/Server/Blog.iml" />
       <module fileurl="file://D:/小米云盘/作业/前端笔记/JAVA/前端笔记.iml" filepath="D:/小米云盘/作业/前端笔记/JAVA/前端笔记.iml" />
     </modules>
   </component>

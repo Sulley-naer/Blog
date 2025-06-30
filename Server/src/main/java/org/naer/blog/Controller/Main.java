@@ -8,7 +8,6 @@ import org.naer.blog.Services.UserSrvices;
 import org.naer.blog.utils.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,7 +33,7 @@ public class Main {
 
     @Resource
     private UserSrvices userSrvices;
-    @Autowired
+    @Resource
     private org.naer.blog.utils.emailUtil emailUtil;
 
     @RequestMapping("/")
@@ -89,7 +88,7 @@ public class Main {
 
     @PostMapping("/registered")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> register(String name, String pwd,String email, String captcha) {
+    public ResponseEntity<?> register(String name, String pwd, String email, String captcha) {
         String key = "Blog_reg_captcha_" + email;
         String codeInRedis = stringRedisTemplate.opsForValue().get(key);
 
@@ -102,12 +101,14 @@ public class Main {
         }
 
         // 验证通过，执行注册
-        userSrvices.insert(name, pwd,email);
-
-        // 可选：注册成功后删除验证码
-        stringRedisTemplate.delete(key);
-
-        return ResponseEntity.ok("注册成功");
+        if (userSrvices.insert(name, pwd, email)) {
+            // 可选：注册成功后删除验证码
+            stringRedisTemplate.delete(key);
+            logger.info("User '{}' registered successfully.", name);
+            return ResponseEntity.ok("注册成功");
+        } else {
+            return ResponseEntity.status(303).body("用户名已存在");
+        }
     }
 
     @PostMapping("/registered/captcha")
@@ -124,12 +125,7 @@ public class Main {
 
     @Data
     static class captchaRequest {
-
         @Setter
         private String email;
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
     }
 }
