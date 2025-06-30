@@ -158,7 +158,7 @@ onMounted(() => {
 .login-container {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 60px);
     overflow: hidden;
     background: var(--background-color);
     display: flex;

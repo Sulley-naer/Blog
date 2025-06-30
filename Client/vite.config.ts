@@ -18,13 +18,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
 
   build: {
     target: 'es2022',
-
     rollupOptions: {
       output: {
         manualChunks(id) {
@@ -34,5 +33,8 @@ export default defineConfig({
         },
       },
     },
+  },
+  server: {
+    host: '0.0.0.0',
   },
 })
