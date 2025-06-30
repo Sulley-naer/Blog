@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  * @author Administrator
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @ComponentScan("org.naer")
 @MapperScan("org.naer.blog.Mapper")
 @EnableMethodSecurity
+@CrossOrigin
 @PropertySource("classpath:mail.properties")
 public class BlogApplication {
     public static void main(String[] args) {

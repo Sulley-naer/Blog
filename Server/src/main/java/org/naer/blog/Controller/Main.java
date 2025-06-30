@@ -43,15 +43,14 @@ public class Main {
 
     @RequestMapping("/hello")
     @PreAuthorize("hasAnyAuthority('update')")
-
     public String hello() {
         return "hello world";
     }
 
     @RequestMapping("/login")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> test(String name, String pwd) {
-        users res = userSrvices.login(name, pwd);
+    public ResponseEntity<?> test(@RequestBody users user) {
+        users res = userSrvices.login(user.getName(), user.getPwd());
         Map<String, Object> authority = new HashMap<>();
 
         if (res != null) {
@@ -72,10 +71,10 @@ public class Main {
             authority.put("permission", permissionSets);
 
             //生成token 带有权限
-            String token = JwtTokenUtil.generateToken(name, authority);
+            String token = JwtTokenUtil.generateToken(user.getName(), authority);
 
             // 记录登录者的日志
-            logger.info("User '{}' logged in successfully.", name);
+            logger.info("User '{}' logged in successfully.", user.getName());
             // 创建匿名类并返回响应
             return ResponseEntity.ok(new Object() {
                 public final String status = "success";  // 状态

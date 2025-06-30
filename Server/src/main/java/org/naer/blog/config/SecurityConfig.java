@@ -23,6 +23,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //跨域配置
+        http.cors(Customizer.withDefaults());
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
@@ -34,7 +37,7 @@ public class SecurityConfig {
                         //开放全部使用注解声明
                         .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
-                // 如果需要使用 HTTP 基本认证，可以加上此行
+        // 如果需要使用 HTTP 基本认证，可以加上此行
 
         return http.build();
     }
