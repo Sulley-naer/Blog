@@ -91,8 +91,9 @@ defineOptions({ name: 'RegisterPage' })
   import { useCounterStore } from '@/stores/counter'
   import { useAuroraBackground } from '@/myCanvasJs/useAuroraBackground'
   import { useMouseTrail } from '@/myCanvasJs/useMouseTrail'
-  import FormError from '@/components/FormError.vue' // 导入错误提示组件
-  
+import FormError from '@/components/FormError.vue'
+import { registeredCaptcha } from '@/utils/apis/public'
+
   const store = useCounterStore()
   const registrationStep = ref(1)
   

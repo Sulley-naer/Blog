@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-const _url = "https://api.example.com"
+const _url = 'http://192.168.137.1:8080/'
 
 export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
   timeout?: number // 超时时间（毫秒）
