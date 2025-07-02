@@ -13,13 +13,9 @@
         <div class="input-group">
           <label for="username">用户名/邮箱</label>
           <div class="glass-input">
-            <input
-              type="text"
-              id="username"
-              v-model="username"
-              placeholder="请输入用户名或邮箱"
-              required
-            />
+            <input type="text" id="username" :value="registerBody.username ?? ''"
+              @blur="registerBody.username = ($event.target as HTMLInputElement).value" placeholder="请输入用户名或邮箱"
+              required />
           </div>
         </div>
 
@@ -28,18 +24,15 @@
             <div class="input-group">
               <label for="password">密码</label>
               <div class="glass-input">
-                <input
-                  type="password"
-                  id="password"
-                  v-model="password"
-                  placeholder="请输入密码"
-                  required
-                />
+                <input type="password" id="password" :value="registerBody.password ?? ''"
+                  @blur="registerBody.password = ($event.target as HTMLInputElement).value" placeholder="请输入密码"
+                  required />
               </div>
             </div>
             <div class="form-options">
               <label class="checkbox-container">
-                <input type="checkbox" v-model="rememberMe" />
+                <input type="checkbox" :checked="registerBody.rememberMe ?? false"
+                  @change="registerBody.rememberMe = ($event.target as HTMLInputElement).checked" />
                 <span class="checkmark"></span>
                 记住我
               </label>
@@ -51,19 +44,10 @@
             <div class="input-group verification-group">
               <label for="verificationCode">邮箱验证码</label>
               <div class="glass-input with-button">
-                <input
-                  type="text"
-                  id="verificationCode"
-                  v-model="verificationCode"
-                  placeholder="6位数字"
-                  required
-                />
-                <button
-                  type="button"
-                  class="send-code-btn"
-                  @click="sendVerificationCode"
-                  :disabled="isSendingCode"
-                >
+                <input type="text" id="verificationCode" :value="registerBody.verificationCode ?? ''"
+                  @blur="registerBody.verificationCode = ($event.target as HTMLInputElement).value"
+                  placeholder="请输入6位验证码" required />
+                <button type="button" class="send-code-btn" @click="sendVerificationCode" :disabled="isSendingCode">
                   {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
                 </button>
               </div>
@@ -76,22 +60,23 @@
         </button>
       </form>
 
-      <div class="switch-mode-link">
+      <!-- <div class="switch-mode-link">
         <a href="#" @click.prevent="toggleLoginMode">
           {{ loginMode === 'password' ? '使用邮箱验证码登录' : '使用密码登录' }}
         </a>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 defineOptions({ name: 'LoginPage' })
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { gsap } from 'gsap'
 import { useCounterStore } from '@/stores/counter'
 import { useAuroraBackground } from '@/myCanvasJs/useAuroraBackground'
 import { useMouseTrail } from '@/myCanvasJs/useMouseTrail'
+import { Login } from '@/utils/apis/user'
 
 const store = useCounterStore()
 
@@ -108,12 +93,17 @@ const loginMode = ref<'password' | 'emailCode'>('password')
     required
   />
 */
-const username = ref('')
-const password = ref('')
-const verificationCode = ref('')
-const rememberMe = ref(false)
 const isSendingCode = ref(false)
 const countdown = ref(0)
+
+const registerBody = ref({
+  username: '',
+  email: '',
+  password: '',
+  verificationCode: '',
+  rememberMe: false
+})
+
 
 const backgroundCanvas = ref<HTMLCanvasElement | null>(null)
 const trailCanvas = ref<HTMLCanvasElement | null>(null)
@@ -152,29 +142,29 @@ const sendVerificationCode = () => {
   }, 1000)
 }
 
-const toggleLoginMode = async () => {
-  const newMode = loginMode.value === 'password' ? 'emailCode' : 'password'
-  const oldSelector = loginMode.value === 'password' ? '.password-mode' : '.email-code-mode'
-  const newSelector = newMode === 'password' ? '.password-mode' : '.email-code-mode'
+// const toggleLoginMode = async () => {
+//   const newMode = loginMode.value === 'password' ? 'emailCode' : 'password'
+//   const oldSelector = loginMode.value === 'password' ? '.password-mode' : '.email-code-mode'
+//   const newSelector = newMode === 'password' ? '.password-mode' : '.email-code-mode'
 
-  gsap.to(oldSelector, {
-    autoAlpha: 0,
-    y: -20,
-    duration: 0.3,
-    ease: 'power2.in',
-    onComplete: async () => {
-      loginMode.value = newMode
-      await nextTick()
-      gsap.fromTo(
-        newSelector,
-        { autoAlpha: 0, y: 20 },
-        { autoAlpha: 1, y: 0, duration: 0.3, ease: 'power2.out' },
-      )
-    },
-  })
-}
+//   gsap.to(oldSelector, {
+//     autoAlpha: 0,
+//     y: -20,
+//     duration: 0.3,
+//     ease: 'power2.in',
+//     onComplete: async () => {
+//       loginMode.value = newMode
+//       await nextTick()
+//       gsap.fromTo(
+//         newSelector,
+//         { autoAlpha: 0, y: 20 },
+//         { autoAlpha: 1, y: 0, duration: 0.3, ease: 'power2.out' },
+//       )
+//     },
+//   })
+// }
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!loginForm.value) return
   gsap.to(loginForm.value.querySelector('.login-btn'), {
     scale: 0.95,
@@ -186,12 +176,18 @@ const handleLogin = () => {
 
   if (loginMode.value === 'password') {
     console.log('密码登录:', {
-      username: username.value,
-      password: password.value,
-      rememberMe: rememberMe.value,
+      username: registerBody.value.username,
+      password: registerBody.value.password,
+      rememberMe: registerBody.value.rememberMe,
     })
+    const { refetch } = await Login(registerBody.value.username, registerBody.value.password)
+    console.log(refetch().then(res => {
+      console.log("res", res)
+    }).catch(err => {
+      console.error("Error:", err)
+    }))
   } else {
-    console.log('验证码登录:', { username: username.value, code: verificationCode.value })
+    console.log('验证码登录:', { username: registerBody.value.username, code: registerBody.value.verificationCode })
   }
 }
 
@@ -444,6 +440,7 @@ onMounted(() => {
 .switch-mode-link a:hover {
   color: var(--primary-color);
 }
+
 @media (max-width: 480px) {
   .login-form {
     width: 350px;

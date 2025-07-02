@@ -1,21 +1,27 @@
+// src/views/__tests__/login.spec.ts
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import Login from '@/views/login.vue'
 
-// mock gsap，避免动画报错
-vi.mock('gsap', () => ({
-  gsap: {
-    set: vi.fn(),
-    timeline: vi.fn(() => ({
-      to: vi.fn().mockReturnThis(),
-    })),
-    to: vi.fn(),
-  },
-}))
+import LoginPage from '@/views/login.vue'
 
-// mock useAuroraBackground 和 useMouseTrail，避免 canvas 依赖报错
+// GSAP 的模拟仍然是需要的，因为 onMounted 中会调用它
+vi.mock('gsap', () => {
+  const mockTimeline = {
+    to: vi.fn().mockReturnThis(),
+  }
+  return {
+    gsap: {
+      set: vi.fn(),
+      timeline: vi.fn(() => mockTimeline),
+      to: vi.fn(),
+      fromTo: vi.fn(),
+    },
+  }
+})
+
+// 其他模拟保持不变
 vi.mock('@/myCanvasJs/useAuroraBackground', () => ({
   useAuroraBackground: vi.fn(),
 }))
@@ -23,84 +29,80 @@ vi.mock('@/myCanvasJs/useMouseTrail', () => ({
   useMouseTrail: vi.fn(),
 }))
 
-describe('login.vue', () => {
-  let wrapper: ReturnType<typeof mount>
+const mockLogin = vi.fn()
+vi.mock('@/utils/apis/user', () => ({
+  Login: vi.fn((...args) => {
+    return mockLogin(...args)
+  }),
+}))
+
+describe('LoginPage.vue', () => {
+  let wrapper: VueWrapper<InstanceType<typeof LoginPage>>
 
   beforeEach(() => {
-    wrapper = mount(Login, {
+    vi.clearAllMocks()
+  })
+
+  const mountComponent = (initialPiniaState: { theme: string } = { theme: 'light' }) => {
+    wrapper = mount(LoginPage, {
       global: {
-        plugins: [createTestingPinia({
-          createSpy: vi.fn,
-          stubActions: false,
-        })],
+        plugins: [
+          createTestingPinia({
+            createSpy: vi.fn,
+            initialState: {
+              counter: initialPiniaState,
+            },
+          }),
+        ],
       },
     })
+  }
+
+  it('正确渲染初始状态（密码登录模式）', () => {
+    mountComponent()
+    expect(wrapper.find('h1').text()).toBe('登录MyCoolBlog')
+    // 确保密码模式的容器存在
+    expect(wrapper.find('.password-mode').exists()).toBe(true)
+    // 确保邮箱模式的容器不存在
+    expect(wrapper.find('.email-code-mode').exists()).toBe(false)
   })
 
-  it('渲染登录表单（密码模式）', () => {
-    expect(wrapper.find('.login-form').exists()).toBe(true)
-    expect(wrapper.find('input#username').exists()).toBe(true)
-    expect(wrapper.find('input#password').exists()).toBe(true)
-    expect(wrapper.find('button.login-btn').exists()).toBe(true)
-    // 默认是密码模式
-    expect((wrapper.vm as { loginMode: string }).loginMode).toBe('password')
+  it('用户输入能够更新 registerBody 数据', async () => {
+    mountComponent()
+
+    await wrapper.find('input#username').setValue('testuser')
+    await wrapper.find('input#username').trigger('blur')
+    await wrapper.find('input#password').setValue('testpassword')
+    await wrapper.find('input#password').trigger('blur')
+    await wrapper.find('input[type="checkbox"]').setChecked(true)
+
+    expect(wrapper.vm.registerBody.username).toBe('testuser')
+    expect(wrapper.vm.registerBody.password).toBe('testpassword')
+    expect(wrapper.vm.registerBody.rememberMe).toBe(true)
   })
 
-  it('切换到邮箱验证码模式', async () => {
-    // 触发切换
-    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
-    await wrapper.vm.$nextTick()
-    // 断言验证码输入框出现
-    expect(wrapper.find('input#verificationCode').exists()).toBe(true)
-    // 密码输入框消失
-    expect(wrapper.find('input#password').exists()).toBe(false)
-    expect((wrapper.vm as unknown as { loginMode: string }).loginMode).toBe('emailCode')
-  })
+  it('在密码模式下提交表单，应调用 Login API', async () => {
+    const mockRefetch = vi.fn().mockResolvedValue({ data: { token: 'fake-token' } })
+    mockLogin.mockReturnValue({ refetch: mockRefetch })
 
-  it('输入用户名和密码并提交（密码模式）', async () => {
-    const usernameInput = wrapper.find('input#username')
-    const passwordInput = wrapper.find('input#password')
-    await usernameInput.setValue('testuser')
-    await passwordInput.setValue('123456')
+    mountComponent()
+
+    await wrapper.find('input#username').setValue('myuser')
+    await wrapper.find('input#username').trigger('blur')
+    await wrapper.find('input#password').setValue('mypass')
+    await wrapper.find('input#password').trigger('blur')
+
     await wrapper.find('form').trigger('submit.prevent')
-    expect((usernameInput.element as HTMLInputElement).value).toBe('testuser')
-    expect((passwordInput.element as HTMLInputElement).value).toBe('123456')
-  })
 
-  it('输入用户名和验证码并提交（邮箱验证码模式）', async () => {
-    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
+    expect(mockLogin).toHaveBeenCalledTimes(1)
+    expect(mockLogin).toHaveBeenCalledWith('myuser', 'mypass')
+
     await wrapper.vm.$nextTick()
-    const usernameInput = wrapper.find('input#username')
-    const codeInput = wrapper.find('input#verificationCode')
-    await usernameInput.setValue('testuser')
-    await codeInput.setValue('888888')
-    await wrapper.find('form').trigger('submit.prevent')
-    expect((usernameInput.element as HTMLInputElement).value).toBe('testuser')
-    expect((codeInput.element as HTMLInputElement).value).toBe('888888')
+    expect(mockRefetch).toHaveBeenCalledTimes(1)
   })
 
-  it('记住我 checkbox 可用', async () => {
-    const checkbox = wrapper.find('input[type="checkbox"]')
-    expect(checkbox.exists()).toBe(true)
-    expect((checkbox.element as HTMLInputElement).checked).toBe(false)
-    await checkbox.setValue(true)
-    expect((checkbox.element as HTMLInputElement).checked).toBe(true)
-  })
-
-  it('忘记密码链接存在', () => {
-    const link = wrapper.find('.forgot-password')
-    expect(link.exists()).toBe(true)
-    expect(link.text()).toContain('忘记密码')
-  })
-
-  it('发送验证码按钮可用', async () => {
-    ;(wrapper.vm as unknown as { loginMode: string }).loginMode = 'emailCode'
-    await wrapper.vm.$nextTick()
-    const btn = wrapper.find('button.send-code-btn')
-    expect(btn.exists()).toBe(true)
-    expect(btn.attributes('disabled')).toBeUndefined()
-    await btn.trigger('click')
-    // 发送后按钮应禁用
-    expect((wrapper.vm as unknown as { isSendingCode: boolean }).isSendingCode).toBe(true)
+  it('在暗黑模式下，isDarkMode 计算属性为 true', () => {
+    mountComponent({ theme: 'dark' })
+    expect(wrapper.vm.isDarkMode).toBe(true)
   })
 })

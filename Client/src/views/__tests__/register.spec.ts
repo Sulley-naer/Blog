@@ -1,93 +1,158 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { createTestingPinia } from '@pinia/testing'
-import Register from '../register.vue'
+// src/views/__tests__/register.spec.ts
 
-// mock gsap，避免动画报错
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { mount, VueWrapper } from '@vue/test-utils'
+import { createTestingPinia } from '@pinia/testing'
+import RegisterPage from '../register.vue'
+
+// --- 模拟模块 ---
+let mockRouterPush: ReturnType<typeof vi.fn>
+let mockRegisteredCaptcha: ReturnType<typeof vi.fn>
+let mockRegistered: ReturnType<typeof vi.fn>
+
 vi.mock('gsap', () => ({
   gsap: {
     set: vi.fn(),
     from: vi.fn(),
-    fromTo: vi.fn(),
-    to: vi.fn(),
+    to: vi.fn((targets, vars) => {
+      if (vars && typeof vars.onComplete === 'function') {
+        vars.onComplete()
+      }
+    }),
+    fromTo: vi.fn((targets, fromVars, toVars) => {
+      if (toVars && typeof toVars.onComplete === 'function') {
+        toVars.onComplete()
+      }
+    }),
   },
 }))
-// mock useAuroraBackground 和 useMouseTrail，避免 canvas 依赖报错
-vi.mock('@/myCanvasJs/useAuroraBackground', () => ({
-  useAuroraBackground: vi.fn(),
+
+vi.mock('@/myCanvasJs/useAuroraBackground', () => ({ useAuroraBackground: vi.fn() }))
+vi.mock('@/myCanvasJs/useMouseTrail', () => ({ useMouseTrail: vi.fn() }))
+
+// ESLint 修复 #1: 将 any[] 替换为 unknown[]
+vi.mock('@/utils/apis/public', () => ({
+  registeredCaptcha: (...args: unknown[]) => mockRegisteredCaptcha(...args),
 }))
-vi.mock('@/myCanvasJs/useMouseTrail', () => ({
-  useMouseTrail: vi.fn(),
+// ESLint 修复 #2: 将 any[] 替换为 unknown[]
+vi.mock('@/utils/apis/user', () => ({
+  Registered: (...args: unknown[]) => mockRegistered(...args),
+}))
+// ESLint 修复 #3: 将 any[] 替换为 unknown[]
+vi.mock('@/router', () => ({
+  default: {
+    push: (...args: unknown[]) => mockRouterPush(...args),
+  },
 }))
 
-describe('register.vue', () => {
-  let wrapper: ReturnType<typeof mount>
+describe('RegisterPage.vue', () => {
+  // ESLint 修复 #4: 将 any 替换为具体的组件实例类型
+  let wrapper: VueWrapper<InstanceType<typeof RegisterPage>>
+
   beforeEach(() => {
-    wrapper = mount(Register, {
+    mockRouterPush = vi.fn()
+    mockRegisteredCaptcha = vi
+      .fn()
+      .mockResolvedValue({ refetch: vi.fn().mockResolvedValue({ success: true }) })
+    mockRegistered = vi.fn().mockReturnValue({
+      refetch: vi.fn().mockResolvedValue({ success: true, token: 'fake-token' }),
+    })
+
+    vi.useFakeTimers()
+    wrapper = mount(RegisterPage, {
       global: {
-        plugins: [createTestingPinia({
-          createSpy: vi.fn,
-          stubActions: false,
-        })],
-        stubs: ['FormError', 'Transition'],
+        plugins: [createTestingPinia({ createSpy: vi.fn })],
+        stubs: { FormError: true, Transition: true },
       },
     })
   })
 
-  it('渲染注册表单第一步', () => {
-    expect(wrapper.find('.register-form').exists()).toBe(true)
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.clearAllMocks()
+  })
+
+  it('正确渲染注册表单第一步', () => {
+    expect(wrapper.find('.step-one').isVisible()).toBe(true)
+    expect(wrapper.find('h1').text()).toBe('创建您的账户')
     expect(wrapper.find('input#username').exists()).toBe(true)
-    expect(wrapper.find('input#email').exists()).toBe(true)
-    expect(wrapper.find('input#verificationCode').exists()).toBe(true)
-    expect(wrapper.find('button.send-code-btn').exists()).toBe(true)
-    expect(wrapper.find('button.action-btn span').text()).toContain('下一步')
   })
 
-  it('点击发送验证码按钮后倒计时', async () => {
-    const btn = wrapper.find('button.send-code-btn')
-    expect(btn.attributes('disabled')).toBeUndefined()
-    await btn.trigger('click')
-    expect(btn.attributes('disabled')).toBeDefined()
-  })
+  it('点击发送验证码按钮后，API被调用且开始倒计时', async () => {
+    await wrapper.find('input#email').setValue('test@example.com')
+    await wrapper.find('button.send-code-btn').trigger('click')
 
-  it('输入用户名、邮箱、验证码并进入第二步', async () => {
-    await wrapper.find('input#username').setValue('testuser')
-    await wrapper.find('input#email').setValue('test@mail.com')
-    await wrapper.find('input#verificationCode').setValue('123456')
-    await wrapper.find('form.step-form').trigger('submit.prevent')
-    // registrationStep 变为 2，step-two 显示
-    expect((wrapper.vm as { registrationStep: number }).registrationStep).toBe(2)
-  })
-
-  it('第二步渲染密码输入', async () => {
-    // 直接设置 registrationStep
-    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
+    expect(mockRegisteredCaptcha).toHaveBeenCalledWith('test@example.com')
     await wrapper.vm.$nextTick()
-    expect(wrapper.find('input#password').exists()).toBe(true)
-    expect(wrapper.find('input#confirmPassword').exists()).toBe(true)
-    expect(wrapper.findAll('button.action-btn').length).toBeGreaterThanOrEqual(1)
+
+    const sendBtn = wrapper.find('button.send-code-btn')
+    expect(sendBtn.attributes('disabled')).toBeDefined()
+    expect(sendBtn.text()).toBe('60s')
+
+    vi.advanceTimersByTime(5000)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button.send-code-btn').text()).toBe('55s')
   })
 
-  it('密码校验不通过时显示错误提示', async () => {
-    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
+  it('填写第一步信息后，能成功进入第二步', async () => {
+    await wrapper.find('input#username').setValue('testuser')
+    await wrapper.find('input#email').setValue('test@example.com')
+    await wrapper.find('input#verificationCode').setValue('123456')
+    await wrapper.find('.step-one .step-form').trigger('submit.prevent')
+
+    expect(wrapper.vm.registrationStep).toBe(2)
+  })
+
+  it('在第二步时，点击“上一步”能成功返回第一步', async () => {
+    wrapper.vm.registrationStep = 2
+    await wrapper.vm.$nextTick()
+    await wrapper.find('.step-two .secondary-btn').trigger('click')
+
+    expect(wrapper.vm.registrationStep).toBe(1)
+  })
+
+  it('密码校验不通过时，不执行注册', async () => {
+    wrapper.vm.registrationStep = 2
+    await wrapper.vm.$nextTick()
     await wrapper.find('input#password').setValue('123')
     await wrapper.find('input#confirmPassword').setValue('123')
-    await wrapper.find('form.step-form').trigger('submit.prevent')
-    expect((wrapper.vm as { passwordError: string }).passwordError).not.toBe('')
+    await wrapper.find('.step-two .step-form').trigger('submit.prevent')
+
+    expect(wrapper.vm.passwordError).not.toBe('')
+    expect(mockRegistered).not.toHaveBeenCalled()
   })
 
-  it('两次密码不一致时显示错误提示', async () => {
-    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
-    await wrapper.find('input#password').setValue('12345678a')
-    await wrapper.find('input#confirmPassword').setValue('87654321a')
-    await wrapper.find('form.step-form').trigger('submit.prevent')
-    expect((wrapper.vm as { confirmPasswordError: string }).confirmPasswordError).not.toBe('')
-  })
-
-  it('点击上一步按钮返回第一步', async () => {
-    ;(wrapper.vm as { registrationStep: number }).registrationStep = 2
+  it('两次输入的密码不一致时，不执行注册', async () => {
+    wrapper.vm.registrationStep = 2
     await wrapper.vm.$nextTick()
-    await wrapper.find('button.secondary-btn').trigger('click')
-    expect((wrapper.vm as { registrationStep: number }).registrationStep).toBe(1)
+    await wrapper.find('input#password').setValue('password123')
+    await wrapper.find('input#confirmPassword').setValue('password456')
+    await wrapper.find('.step-two .step-form').trigger('submit.prevent')
+
+    expect(wrapper.vm.confirmPasswordError).not.toBe('')
+    expect(mockRegistered).not.toHaveBeenCalled()
+  })
+
+  it('完整填写并提交表单后，应调用注册API并跳转路由', async () => {
+    // 步骤一
+    await wrapper.find('input#username').setValue('finaluser')
+    await wrapper.find('input#email').setValue('final@example.com')
+    await wrapper.find('input#verificationCode').setValue('123456')
+    await wrapper.find('.step-one .step-form').trigger('submit.prevent')
+
+    // 步骤二
+    await wrapper.vm.$nextTick()
+    await wrapper.find('input#password').setValue('password123')
+    await wrapper.find('input#confirmPassword').setValue('password123')
+    await wrapper.find('.step-two .step-form').trigger('submit.prevent')
+
+    // 验证
+    expect(mockRegistered).toHaveBeenCalledWith(
+      'finaluser',
+      'password123',
+      'final@example.com',
+      '123456',
+    )
+    expect(mockRouterPush).toHaveBeenCalledWith('/login')
   })
 })
