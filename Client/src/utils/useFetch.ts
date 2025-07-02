@@ -1,6 +1,8 @@
 import { ref } from 'vue'
+import { useCounterStore } from '@/stores/counter'
+const store = useCounterStore()
 
-const _url = 'http://ra6368f6.natappfree.cc'
+const _url = '/api'
 
 export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
   timeout?: number // 超时时间（毫秒）
@@ -13,6 +15,7 @@ export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions 
   const loading = ref(false)
 
   const fetchData = async (): Promise<T | null> => {
+    store.toggleAwaitLoad()
     loading.value = true
     error.value = null
     data.value = null
@@ -53,16 +56,20 @@ export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions 
         : await response.text()
 
       data.value = responseData as T
+      store.toggleAwaitLoad()
       return data.value
     } catch (err) {
+      store.toggleAwaitLoad()
       if (err instanceof Error) {
         error.value = err
+        throw err
       } else if (typeof err === 'string') {
         error.value = new Error(err)
+        throw error.value
       } else {
         error.value = new Error('Unknown error')
+        throw error.value
       }
-      return null
     } finally {
       loading.value = false
       if (timer) clearTimeout(timer)

@@ -16,10 +16,14 @@ export default defineConfig({
       dirs: 'src/views',
     }),
   ],
+  assetsInclude: ['**/*.lottie'],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  test: {
+    setupFiles: ['src/tests/setupPinia.ts'],
   },
 
   build: {

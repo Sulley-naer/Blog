@@ -13,6 +13,13 @@ export const Login = (userName: string, password: string) => {
   })
 }
 
+/*
+@param {string} userName - 用户名
+@param {string} password - 密码
+@param {string} email - 邮箱
+@param {string} captcha - 验证码
+*/
+
 export const Registered = (userName: string, password: string, email: string, captcha: string) => {
   const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
@@ -26,14 +33,13 @@ export const Registered = (userName: string, password: string, email: string, ca
     throw new Error('验证码不能为空')
   }
 
-  const formData = new FormData()
-  formData.append('name', userName)
-  formData.append('pwd', password)
-  formData.append('email', email)
-  formData.append('captcha', captcha)
-
   return useLazyFetch('/registered', {
     method: 'POST',
-    body: formData,
+    body: {
+      name: userName,
+      pwd: password,
+      email: email,
+      captcha: captcha,
+    },
   })
 }

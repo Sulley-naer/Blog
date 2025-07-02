@@ -14,43 +14,21 @@
             <div class="input-group">
               <label for="username">用户名</label>
               <div class="glass-input">
-                <input
-                  type="text"
-                  id="username"
-                  v-model="username"
-                  placeholder="设置一个独特的昵称"
-                  required
-                />
+                <input type="text" id="username" v-model="userRegistered.username" placeholder="设置一个独特的昵称" required />
               </div>
             </div>
             <div class="input-group">
               <label for="email">邮箱地址</label>
               <div class="glass-input">
-                <input
-                  type="email"
-                  id="email"
-                  v-model="email"
-                  placeholder="用于接收通知和找回密码"
-                  required
-                />
+                <input type="email" id="email" v-model="userRegistered.email" placeholder="用于接收通知和找回密码" required />
               </div>
             </div>
             <div class="input-group verification-group">
               <label for="verificationCode">邮箱验证码</label>
               <div class="glass-input with-button">
-                <input
-                  type="text"
-                  id="verificationCode"
-                  v-model="verificationCode"
-                  placeholder="6位数字"
-                  required
-                />
-                <button
-                  type="button"
-                  class="send-code-btn"
-                  @click="sendVerificationCode"
-                  :disabled="isSendingCode"
-                >
+                <input type="text" id="verificationCode" v-model="userRegistered.verificationCode"
+                  placeholder="请输入6位唯一验证码" required />
+                <button type="button" class="send-code-btn" @click="sendVerificationCode" :disabled="isSendingCode">
                   {{ countdown > 0 ? `${countdown}s` : '发送' }}
                 </button>
               </div>
@@ -71,14 +49,8 @@
             <div class="input-group">
               <label for="password">密码</label>
               <div class="glass-input">
-                <input
-                  type="password"
-                  id="password"
-                  v-model="password"
-                  @input="validatePassword"
-                  placeholder="至少8位，包含字母和数字"
-                  required
-                />
+                <input type="password" id="password" v-model="userRegistered.password" @input="validatePassword"
+                  placeholder="至少8位，包含字母和数字" required />
               </div>
               <!-- 密码错误提示 -->
               <Transition @enter="onErrorEnter" @leave="onErrorLeave">
@@ -88,14 +60,8 @@
             <div class="input-group">
               <label for="confirmPassword">确认密码</label>
               <div class="glass-input">
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  v-model="confirmPassword"
-                  @input="validatePassword"
-                  placeholder="请再次输入密码"
-                  required
-                />
+                <input type="password" id="confirmPassword" v-model="userRegistered.confirmPassword"
+                  @input="validatePassword" placeholder="请再次输入密码" required />
               </div>
               <!-- 确认密码错误提示 -->
               <Transition @enter="onErrorEnter" @leave="onErrorLeave">
@@ -127,24 +93,27 @@ import { useAuroraBackground } from '@/myCanvasJs/useAuroraBackground'
 import { useMouseTrail } from '@/myCanvasJs/useMouseTrail'
 import FormError from '@/components/FormError.vue'
 import { registeredCaptcha } from '@/utils/apis/public'
+import { Registered } from '@/utils/apis/user'
+import router from '@/router'
+
 
 const store = useCounterStore()
 const registrationStep = ref(1)
 
-//TODO 用对象装属性 data.name 别开一堆变量挂ref 和 v-model 更新数据 性能太差了
-
-const email = ref('')
-const username = ref('')
-const verificationCode = ref('')
-const password = ref('')
-const confirmPassword = ref('')
+const userRegistered = ref({
+  email: '',
+  username: '',
+  verificationCode: '',
+  password: '',
+  confirmPassword: ''
+})
 
 // 为错误信息创建状态
 const passwordError = ref('')
 const confirmPasswordError = ref('')
 
-const isSendingCode = ref(false)
-const countdown = ref(0)
+const isSendingCode = ref<boolean>(false)
+const countdown = ref<number>(0)
 
 const backgroundCanvas = ref<HTMLCanvasElement | null>(null)
 const trailCanvas = ref<HTMLCanvasElement | null>(null)
@@ -164,22 +133,32 @@ const setupIntroAnimation = () => {
     ease: 'expo.out',
     delay: 0.2,
   })
-  // 初始时，将第二步预置在舞台右侧的幕后
   gsap.set('.step-two', { xPercent: 100, autoAlpha: 0 })
 }
 
-const sendVerificationCode = () => {
+const sendVerificationCode = async () => {
   if (isSendingCode.value) return
   isSendingCode.value = true
-  countdown.value = 60
-
   const interval = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
+    if (countdown.value > 0) {
+      countdown.value--
+    } else {
       clearInterval(interval)
-      isSendingCode.value = false
     }
   }, 1000)
+
+  try {
+    const { refetch } = await registeredCaptcha(userRegistered.value.email)
+    refetch().then(() => {
+      countdown.value = 60
+    }).catch(() => {
+      isSendingCode.value = false
+      countdown.value = 0
+    })
+  } catch {
+    isSendingCode.value = false
+    countdown.value = 0
+  }
 }
 
 const goToNextStep = () => {
@@ -202,9 +181,8 @@ const goToPrevStep = () => {
   gsap.to('.step-one', { duration: 0.5, xPercent: 0, autoAlpha: 1, ease: 'power3.out', delay: 0.1 })
 }
 
-// 创建密码校验函数
+// 密码校验
 const validatePassword = (): boolean => {
-  // 每次校验前，先重置之前的错误信息
   passwordError.value = ''
   confirmPasswordError.value = ''
   let isValid = true
@@ -213,13 +191,13 @@ const validatePassword = (): boolean => {
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
   // 只有当用户输入了密码时，才进行强度校验
-  if (password.value && !passwordRegex.test(password.value)) {
+  if (userRegistered.value.password && !passwordRegex.test(userRegistered.value.password)) {
     passwordError.value = '需为8位以上的字母和数字组合'
     isValid = false
   }
 
   // 只有当用户输入了确认密码时，才进行一致性校验
-  if (confirmPassword.value && password.value !== confirmPassword.value) {
+  if (userRegistered.value.confirmPassword && userRegistered.value.password !== userRegistered.value.confirmPassword) {
     confirmPasswordError.value = '两次输入的密码不一致'
     isValid = false
   }
@@ -227,23 +205,18 @@ const validatePassword = (): boolean => {
   return isValid
 }
 
-// 监听密码和确认密码输入，实现实时校验
-watch([password, confirmPassword], () => {
+watch([userRegistered.value.password, userRegistered.value.confirmPassword], () => {
   if (registrationStep.value === 2) {
     validatePassword()
   }
 })
 
-// 更新注册处理函数
 const handleRegister = () => {
-  // 在提交时，进行最终的、全面的校验
   if (!validatePassword()) {
-    // 如果校验失败，播放晃动动画作为提示
     gsap.fromTo(registerForm.value, { x: 0 }, { x: 10, duration: 0.6, ease: 'elastic.out(1, 0.3)' })
-    return // 终止提交
+    return
   }
 
-  // 所有校验通过，执行注册成功动画
   gsap.to(registerForm.value, {
     scale: 1.05,
     duration: 0.2,
@@ -251,12 +224,18 @@ const handleRegister = () => {
     repeat: 1,
     ease: 'power2.inOut',
     onComplete: () => {
-      console.log('注册成功:', {
-        email: email.value,
-        username: username.value,
-        password: password.value,
-        code: verificationCode.value,
-      })
+      const { refetch } = Registered(
+        userRegistered.value.username,
+        userRegistered.value.password,
+        userRegistered.value.email,
+        userRegistered.value.verificationCode
+      )
+      console.log(
+        refetch().then((res) => {
+          router.push('/login')
+          console.log('res', res)
+        }),
+      )
     },
   })
 }
@@ -290,6 +269,7 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
 }
+
 .background-canvas,
 .trail-canvas {
   position: absolute;
@@ -298,9 +278,11 @@ onMounted(() => {
   pointer-events: none;
   z-index: 1;
 }
+
 .trail-canvas {
   z-index: 2;
 }
+
 .register-form {
   position: relative;
   z-index: 10;
@@ -318,12 +300,14 @@ onMounted(() => {
   height: 600px;
   overflow: hidden;
 }
+
 .form-content-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
+
 .form-step {
   position: absolute;
   width: 100%;
@@ -331,10 +315,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
 }
+
 .form-header {
   text-align: center;
   margin-bottom: 30px;
 }
+
 .form-header h1 {
   color: var(--text-color);
   font-size: 1.8rem;
@@ -344,20 +330,25 @@ onMounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
 .form-header p {
   color: var(--text-color-secondary);
   font-size: 0.9rem;
   margin: 0;
 }
+
 .step-form {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 .input-group {
   margin-bottom: 20px;
   position: relative;
-} /* 添加 relative 以便错误提示定位 */
+}
+
+/* 添加 relative 以便错误提示定位 */
 .input-group label {
   display: block;
   color: var(--text-color);
@@ -365,6 +356,7 @@ onMounted(() => {
   margin-bottom: 8px;
   font-size: 0.9rem;
 }
+
 .glass-input {
   position: relative;
   overflow: hidden;
@@ -373,10 +365,12 @@ onMounted(() => {
   border: 1px solid rgba(var(--text-color-rgb), 0.15);
   transition: all 0.3s ease;
 }
+
 .glass-input:focus-within {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(var(--primary-color), 0.1);
 }
+
 .glass-input input {
   width: 100%;
   padding: 14px 20px;
@@ -386,14 +380,17 @@ onMounted(() => {
   font-size: 1rem;
   outline: none;
 }
+
 .glass-input.with-button {
   display: flex;
   align-items: center;
   padding-right: 5px;
 }
+
 .glass-input.with-button input {
   flex-grow: 1;
 }
+
 .send-code-btn {
   flex-shrink: 0;
   padding: 8px 12px;
@@ -408,10 +405,12 @@ onMounted(() => {
     background-color 0.3s,
     opacity 0.3s;
 }
+
 .send-code-btn:disabled {
   background-color: var(--text-color-secondary);
   cursor: not-allowed;
 }
+
 .switch-link {
   text-align: center;
   position: absolute;
@@ -422,16 +421,19 @@ onMounted(() => {
   font-size: 0.9rem;
   color: var(--text-color-secondary);
 }
+
 .switch-link a {
   color: var(--primary-color);
   text-decoration: none;
   font-weight: 600;
 }
+
 .form-actions {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
+
 .action-btn {
   width: 100%;
   padding: 15px;
@@ -442,23 +444,28 @@ onMounted(() => {
   transition: all 0.3s ease;
   border: 1px solid transparent;
 }
+
 .action-btn:hover {
   transform: translateY(-2px);
 }
+
 .action-btn {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
 }
+
 .action-btn:hover {
   box-shadow: 0 4px 15px rgba(var(--primary-color), 0.3);
 }
+
 .secondary-btn {
   background: transparent;
   color: var(--text-color-secondary);
   border-color: var(--text-color-secondary);
   font-weight: 500;
 }
+
 .secondary-btn:hover {
   color: var(--primary-color);
   border-color: var(--primary-color);

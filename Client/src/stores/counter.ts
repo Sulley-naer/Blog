@@ -1,11 +1,14 @@
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useCounterStore = defineStore('counter', () => {
   const theme = ref(localStorage.getItem('theme') || 'light')
-
+  const awaitLoad = ref(false)
   function toggleTheme() {
     theme.value = theme.value === 'light' ? 'dark' : 'light'
+  }
+  function toggleAwaitLoad() {
+    awaitLoad.value = !awaitLoad.value
   }
 
   watch(theme, (newTheme) => {
@@ -13,12 +16,5 @@ export const useCounterStore = defineStore('counter', () => {
     document.documentElement.className = newTheme
   })
 
-  //TODO 你这个count是复制过来没删吗 留着干啥？
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
-
-  return { count, doubleCount, increment, theme, toggleTheme }
+  return { theme, toggleTheme, awaitLoad, toggleAwaitLoad }
 })

@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@lottiefiles/dotlottie-vue": "^0.7.2",
     "dompurify": "^3.2.6",
     "gsap": "^3.13.0",
     "highlight.js": "^11.11.1",
