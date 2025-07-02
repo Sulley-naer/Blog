@@ -1,12 +1,19 @@
 package org.naer.blog.Mapper.pojo;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 @Data
 public class users {
     private int id;
+
+    @NotNull
+    @NotBlank
     private String name;
+    @NotNull
+    @NotBlank
     private String pwd;
     private boolean select;
     private boolean update;

@@ -78,18 +78,27 @@
 			<version>3.0.4</version>
 		</dependency>
 
+		<!-- 参数自动校验 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+
+		<!-- token生成器 -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>0.12.6</version>
 		</dependency>
 
+		<!-- 发送邮件 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 			<version>3.4.1</version>
 		</dependency>
-
+		<!-- 生成Bean -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

@@ -1,8 +1,9 @@
 package org.naer.blog.Controller;
 
 import jakarta.annotation.Resource;
-import lombok.Data;
-import lombok.Setter;
+import jakarta.validation.Valid;
+import org.naer.blog.DTO.RegRequest;
+import org.naer.blog.DTO.captchaRequest;
 import org.naer.blog.Mapper.pojo.users;
 import org.naer.blog.Services.UserSrvices;
 import org.naer.blog.utils.JwtTokenUtil;
@@ -47,12 +48,13 @@ public class Main {
         return "hello world";
     }
 
-    @RequestMapping("/login")
+    @PostMapping("/login")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> test(@RequestBody users user) {
+    public ResponseEntity<?> test(@RequestBody @Valid users user) {
         users res = userSrvices.login(user.getName(), user.getPwd());
         Map<String, Object> authority = new HashMap<>();
 
+        // 登录成功 生成Token
         if (res != null) {
             //验证权限
             List<String> permissionSets = new ArrayList<>();
@@ -82,28 +84,37 @@ public class Main {
             });
         }
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.badRequest().body(new Object() {
+            final int code = 400;
+            final String message = "登录失败";
+        });
     }
 
     @PostMapping("/registered")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<?> register(String name, String pwd, String email, String captcha) {
-        String key = "Blog_reg_captcha_" + email;
+    public ResponseEntity<?> register(@RequestBody @Valid RegRequest data) {
+        String key = "Blog_reg_captcha_" + data.getEmail();
         String codeInRedis = stringRedisTemplate.opsForValue().get(key);
 
         if (codeInRedis == null) {
-            return ResponseEntity.badRequest().body("验证码已过期或不存在");
+            return ResponseEntity.badRequest().body(new Object() {
+                final int code = 400;
+                final String message = "验证码已过期或不存在";
+            });
         }
 
-        if (!codeInRedis.equals(captcha)) {
-            return ResponseEntity.badRequest().body("验证码错误");
+        if (!codeInRedis.equals(data.getCaptcha())) {
+            return ResponseEntity.badRequest().body(new Object() {
+                final int code = 400;
+                final String message = "验证码错误";
+            });
         }
 
         try {
-            userSrvices.insert(name, pwd, email);
+            userSrvices.insert(data.getName(), data.getPwd(), data.getEmail());
             // 可选：注册成功后删除验证码
             stringRedisTemplate.delete(key);
-            logger.info("User '{}' registered successfully.", name);
+            logger.info("User '{}' registered successfully.", data.getName());
             return ResponseEntity.ok("注册成功");
         } catch (Exception e) {
             return ResponseEntity.status(303).body("用户名已存在");
@@ -113,18 +124,12 @@ public class Main {
     @PostMapping("/registered/captcha")
     @PreAuthorize("permitAll()")
     public boolean captcha(@RequestBody captchaRequest data) {
-        String code = String.valueOf(1000 + new Random().nextInt(9000));
+        String code = String.valueOf(100000 + new Random().nextInt(900000));
 
-        logger.info("发送验证码至:{}", data.email);
+        logger.info("发送验证码至:{}", data);
 
         // 可设置过期时间
-        stringRedisTemplate.opsForValue().set("Blog_reg_captcha_" + data.email, code, Duration.ofMinutes(5));
-        return emailUtil.sendCaptchaEmail(data.email, code);
-    }
-
-    @Data
-    static class captchaRequest {
-        @Setter
-        private String email;
+        stringRedisTemplate.opsForValue().set("Blog_reg_captcha_" + data.getEmail(), code, Duration.ofMinutes(5));
+        return emailUtil.sendCaptchaEmail(data.getEmail(), code);
     }
 }
