@@ -37,14 +37,13 @@ vi.mock('@/utils/apis/user', () => ({
 }))
 
 describe('LoginPage.vue', () => {
-  let wrapper: VueWrapper<any>
+  let wrapper: VueWrapper<InstanceType<typeof LoginPage>>
 
   beforeEach(() => {
-    // 这里不再需要 fake timers，因为倒计时的测试被移除了
     vi.clearAllMocks()
   })
 
-  const mountComponent = (initialPiniaState = { theme: 'light' }) => {
+  const mountComponent = (initialPiniaState: { theme: string } = { theme: 'light' }) => {
     wrapper = mount(LoginPage, {
       global: {
         plugins: [

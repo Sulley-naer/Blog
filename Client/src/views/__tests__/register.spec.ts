@@ -30,28 +30,30 @@ vi.mock('gsap', () => ({
 vi.mock('@/myCanvasJs/useAuroraBackground', () => ({ useAuroraBackground: vi.fn() }))
 vi.mock('@/myCanvasJs/useMouseTrail', () => ({ useMouseTrail: vi.fn() }))
 
+// ESLint 修复 #1: 将 any[] 替换为 unknown[]
 vi.mock('@/utils/apis/public', () => ({
-  registeredCaptcha: (...args: any[]) => mockRegisteredCaptcha(...args),
+  registeredCaptcha: (...args: unknown[]) => mockRegisteredCaptcha(...args),
 }))
+// ESLint 修复 #2: 将 any[] 替换为 unknown[]
 vi.mock('@/utils/apis/user', () => ({
-  Registered: (...args: any[]) => mockRegistered(...args),
+  Registered: (...args: unknown[]) => mockRegistered(...args),
 }))
+// ESLint 修复 #3: 将 any[] 替换为 unknown[]
 vi.mock('@/router', () => ({
   default: {
-    push: (...args: any[]) => mockRouterPush(...args),
+    push: (...args: unknown[]) => mockRouterPush(...args),
   },
 }))
 
 describe('RegisterPage.vue', () => {
-  let wrapper: VueWrapper<any>
+  // ESLint 修复 #4: 将 any 替换为具体的组件实例类型
+  let wrapper: VueWrapper<InstanceType<typeof RegisterPage>>
 
   beforeEach(() => {
     mockRouterPush = vi.fn()
-    // `registeredCaptcha` 在组件中被 await，所以 mockResolvedValue 是正确的
     mockRegisteredCaptcha = vi
       .fn()
       .mockResolvedValue({ refetch: vi.fn().mockResolvedValue({ success: true }) })
-    // `Registered` 在组件中被同步调用，所以必须用 mockReturnValue
     mockRegistered = vi.fn().mockReturnValue({
       refetch: vi.fn().mockResolvedValue({ success: true, token: 'fake-token' }),
     })
