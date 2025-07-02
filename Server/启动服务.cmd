@@ -1,3 +1,3 @@
 @echo off
-java -jar target\Blog-v1.0.30.jar
+java -jar target\Blog-0.0.1-SNAPSHOT.jar
 pause
