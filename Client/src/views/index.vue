@@ -3,7 +3,7 @@
 import HeroSection from '@/components/index/HeroSection.vue'
 import FeatureGrid from '@/components/index/FeatureGrid.vue'
 import AppFooter from '@/components/index/AppFooter.vue'
-import BackToTop from '@/components/index/BackToTop.vue'
+import BackToTop from '@/components/BackToTop.vue'
 
 defineOptions({
   name: 'HomePage'
@@ -13,11 +13,7 @@ defineOptions({
 <template>
   <div class="home-page">
     <BackToTop />
-
-    <!-- 英雄区域 -->
     <HeroSection />
-
-    <!-- 主内容区域，现在只包含特性网格 -->
     <main class="main-content">
       <FeatureGrid />
     </main>

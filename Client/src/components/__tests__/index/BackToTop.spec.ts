@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import BackToTop from '../../index/BackToTop.vue'
+import BackToTop from '../../BackToTop.vue'
 
 describe('BackToTop.vue', () => {
   let appDiv: HTMLDivElement

@@ -81,13 +81,11 @@ watch(() => store.theme, () => {
     <div class="header-inner" ref="headerInnerRef">
       <div class="glow-layer"></div>
       <div class="header-content">
-        <!-- **改动1：Logo 也应该是一个可以点击返回首页的链接** -->
         <router-link to="/" class="logo">MyCoolBlog</router-link>
         <nav class="navigation">
-          <!-- **改动2：将所有导航项都替换为 <router-link>** -->
           <div class="nav-links">
             <router-link to="/" class="nav-link">首页</router-link>
-            <router-link to="/posts" class="nav-link">文章</router-link>
+            <router-link to="/post" class="nav-link">文章</router-link>
             <router-link to="/about" class="nav-link">关于</router-link>
           </div>
           <div class="nav-actions">

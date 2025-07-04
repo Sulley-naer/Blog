@@ -1,8 +1,7 @@
+// src/utils/useFetch.ts
+
 import { ref } from 'vue'
 import { useCounterStore } from '@/stores/counter'
-const store = useCounterStore()
-
-const _url = '/api'
 
 export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
   timeout?: number // 超时时间（毫秒）
@@ -10,9 +9,14 @@ export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
 }
 
 export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions = {}) {
+  const store = useCounterStore()
   const data = ref<T | null>(null)
   const error = ref<Error | null>(null)
   const loading = ref(false)
+
+  const _url = '/api'
+  const finalUrl = url.startsWith('http') ? url : _url + url
+  // --------------
 
   const fetchData = async (): Promise<T | null> => {
     store.toggleAwaitLoad()
@@ -47,7 +51,7 @@ export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions 
     }
 
     try {
-      const response = await fetch(_url + url, fetchOptions)
+      const response = await fetch(finalUrl, fetchOptions)
       if (!response.ok) throw new Error(response.statusText)
 
       const contentType = response.headers.get('content-type')
