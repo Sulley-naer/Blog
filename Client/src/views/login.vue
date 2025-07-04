@@ -74,8 +74,8 @@ defineOptions({ name: 'LoginPage' })
 import { ref, onMounted, computed } from 'vue'
 import { gsap } from 'gsap'
 import { useCounterStore } from '@/stores/counter'
-import { useAuroraBackground } from '@/myCanvasJs/useAuroraBackground'
-import { useMouseTrail } from '@/myCanvasJs/useMouseTrail'
+import { useAuroraBackground } from '@/AnimationJs/useAuroraBackground'
+import { useMouseTrail } from '@/AnimationJs/useMouseTrail'
 import { Login } from '@/utils/apis/user'
 
 const store = useCounterStore()

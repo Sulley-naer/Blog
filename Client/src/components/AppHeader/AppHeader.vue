@@ -3,7 +3,8 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import HeaderAuth from './HeaderAuth.vue'
 import ThemeToggle from './ThemeToggle.vue'
-import router from '@/router'
+// **移除 router 的直接导入，因为 <router-link> 会自动处理**
+// import router from '@/router'
 
 const store = useCounterStore()
 const headerInnerRef = ref<HTMLElement | null>(null)
@@ -80,12 +81,14 @@ watch(() => store.theme, () => {
     <div class="header-inner" ref="headerInnerRef">
       <div class="glow-layer"></div>
       <div class="header-content">
-        <div class="logo">MyCoolBlog</div>
+        <!-- **改动1：Logo 也应该是一个可以点击返回首页的链接** -->
+        <router-link to="/" class="logo">MyCoolBlog</router-link>
         <nav class="navigation">
+          <!-- **改动2：将所有导航项都替换为 <router-link>** -->
           <div class="nav-links">
-            <a href="#" class="nav-link active" @click="() => { router.push('/') }">首页</a>
-            <a href="#" class="nav-link">归档</a>
-            <a href="#" class="nav-link">关于</a>
+            <router-link to="/" class="nav-link">首页</router-link>
+            <router-link to="/posts" class="nav-link">文章</router-link>
+            <router-link to="/about" class="nav-link">关于</router-link>
           </div>
           <div class="nav-actions">
             <HeaderAuth :is-logged-in="isLoggedIn" :user="user" @logout="handleLogout" />
@@ -152,41 +155,51 @@ watch(() => store.theme, () => {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--primary-color);
-}
-
-.navigation {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.nav-link {
-  color: var(--text-color-secondary);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-
-  &:hover,
-  &.active {
-    color: var(--primary-color);
+    /* **新增：为 logo 添加 text-decoration: none** */
   }
-}
-
-@media (max-width: 768px) {
+  
+  .navigation {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
   .nav-links {
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
   }
-}
+  
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  
+    &:hover {
+      color: var(--primary-color);
+    }
+  
+    /* **改动3：使用 router-link-exact-active 来定义高亮样式** */
+    /* 当链接完全匹配当前路由时，应用此样式 */
+    &.router-link-exact-active {
+      color: var(--primary-color);
+      font-weight: 600;
+      /* 可以加粗以示区别 */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+  }
+  
 </style>

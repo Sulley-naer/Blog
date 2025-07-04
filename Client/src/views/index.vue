@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+// **移除了所有与 PostList 相关的导入和逻辑**
 import HeroSection from '@/components/index/HeroSection.vue'
-import PostList from '@/components/index/PostList.vue'
+import FeatureGrid from '@/components/index/FeatureGrid.vue'
 import AppFooter from '@/components/index/AppFooter.vue'
-import ViewOptions from '@/components/index/ViewOptions.vue'
 import BackToTop from '@/components/index/BackToTop.vue'
 
 defineOptions({
   name: 'HomePage'
 })
-
-const currentLayout = ref('list')
-
-const handleLayoutUpdate = (newLayout: string) => {
-  currentLayout.value = newLayout
-}
 </script>
 
 <template>
   <div class="home-page">
     <BackToTop />
-    <main class="content-wrapper">
-      <HeroSection />
-      <ViewOptions @update:layout="handleLayoutUpdate" />
-      <PostList :layout="currentLayout" />
+
+    <!-- 英雄区域 -->
+    <HeroSection />
+
+    <!-- 主内容区域，现在只包含特性网格 -->
+    <main class="main-content">
+      <FeatureGrid />
     </main>
+
     <AppFooter />
   </div>
 </template>
@@ -32,12 +29,13 @@ const handleLayoutUpdate = (newLayout: string) => {
 <style scoped lang="scss">
 .home-page {
   position: relative;
-
-  .content-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-  }
 }
 
+// **样式简化**
+.main-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  }
+  
 </style>

@@ -39,19 +39,27 @@ export default defineConfig({
     },
   },
 
-  //TODO 把这里的服务器IP用 env 文件变量来配置,不会bing vite env 文件读取 还能优化到 开发与生产环境自动切换地址
+  // 支持通过 .env 文件配置服务器地址，自动区分开发/生产环境
   server: {
     host: '0.0.0.0',
     cors: {
-      origin: ['ra6368f6.natappfree.cc'],
+      origin: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
       credentials: true,
     },
-    allowedHosts: ['ra6368f6.natappfree.cc'],
+    allowedHosts: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
     proxy: {
       '/api': {
-        target: 'http://ra6368f6.natappfree.cc',
+        target: process.env.VITE_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/gh-proxy': {
+        // 目标服务器是我们想要请求的 GitHub raw 内容地址
+        target: 'https://raw.githubusercontent.com',
+        // 必须设置为 true，否则代理会失败
+        changeOrigin: true,
+        // 重写路径：在将请求发给目标服务器前，移除路径中的 '/gh-proxy' 部分
+        rewrite: (path) => path.replace(/^\/gh-proxy/, ''),
       },
     },
   },
