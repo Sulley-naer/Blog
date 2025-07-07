@@ -3,8 +3,7 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import HeaderAuth from './HeaderAuth.vue'
 import ThemeToggle from './ThemeToggle.vue'
-// **移除 router 的直接导入，因为 <router-link> 会自动处理**
-// import router from '@/router'
+import GithubIcon from './GithubIcon.vue'
 
 const store = useCounterStore()
 const headerInnerRef = ref<HTMLElement | null>(null)
@@ -91,6 +90,10 @@ watch(() => store.theme, () => {
           <div class="nav-actions">
             <HeaderAuth :is-logged-in="isLoggedIn" :user="user" @logout="handleLogout" />
             <ThemeToggle />
+            <a href="https://github.com/Sulley-naer/Blog" target="_blank" rel="noopener noreferrer"
+              class="action-icon-btn" aria-label="GitHub">
+              <GithubIcon class="action-icon" />
+            </a>
           </div>
         </nav>
       </div>
@@ -154,25 +157,25 @@ watch(() => store.theme, () => {
   font-weight: bold;
   color: var(--primary-color);
   text-decoration: none;
-    /* **新增：为 logo 添加 text-decoration: none** */
-  }
-  
-  .navigation {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-  
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+    /* 稍微减小间距，让图标按钮更紧凑 */
   }
   
   .nav-link {
@@ -185,19 +188,36 @@ watch(() => store.theme, () => {
       color: var(--primary-color);
     }
   
-    /* **改动3：使用 router-link-exact-active 来定义高亮样式** */
-    /* 当链接完全匹配当前路由时，应用此样式 */
     &.router-link-exact-active {
       color: var(--primary-color);
       font-weight: 600;
-      /* 可以加粗以示区别 */
-    }
-  }
+  /* **3. 新增图标按钮的样式** */
+    .action-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 6px;
+      color: var(--text-color);
+      transition: background-color 0.2s ease, color 0.2s ease;
   
+      &:hover {
+        background-color: var(--background-color);
+        color: var(--primary-color);
+      }
+  
+      .action-icon {
+        width: 22px;
+        height: 22px;
+      }
+    }
+
+  }
+
   @media (max-width: 768px) {
     .nav-links {
       display: none;
     }
   }
-  
+}
 </style>
