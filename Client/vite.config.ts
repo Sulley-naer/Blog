@@ -6,6 +6,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import Pages from 'vite-plugin-pages'
 
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -49,18 +50,18 @@ export default defineConfig({
     allowedHosts: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
     proxy: {
       '/api': {
-        target: process.env.VITE_API_TARGET || 'http://localhost:3000',
+        target: 'http://m6ebcdfb.natappfree.cc',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
       '/gh-proxy': {
-        // 目标服务器是我们想要请求的 GitHub raw 内容地址
         target: 'https://raw.githubusercontent.com',
-        // 必须设置为 true，否则代理会失败
         changeOrigin: true,
-        // 重写路径：在将请求发给目标服务器前，移除路径中的 '/gh-proxy' 部分
         rewrite: (path) => path.replace(/^\/gh-proxy/, ''),
       },
     },
   },
 })
+
+console.log('VITE_API_TARGET:', process.env.VITE_API_TARGET); // 启动时查看终端输出
+

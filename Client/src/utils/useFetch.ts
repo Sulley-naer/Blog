@@ -1,7 +1,7 @@
 // src/utils/useFetch.ts
 
 import { ref } from 'vue'
-import { useCounterStore } from '@/stores/counter'
+import { useCounterStore } from '@/stores/counter.js'
 
 export interface UseFetchOptions extends Omit<RequestInit, 'body'> {
   timeout?: number // 超时时间（毫秒）
@@ -14,9 +14,8 @@ export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions 
   const error = ref<Error | null>(null)
   const loading = ref(false)
 
-  const _url = '/api'
+  const _url = 'http://m6ebcdfb.natappfree.cc/auth'
   const finalUrl = url.startsWith('http') ? url : _url + url
-  // --------------
 
   const fetchData = async (): Promise<T | null> => {
     store.toggleAwaitLoad()

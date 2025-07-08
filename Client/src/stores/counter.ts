@@ -6,11 +6,15 @@ export const useCounterStore = defineStore('counter', () => {
   const awaitLoad = ref(false)
   // const onceLoad = ref(localStorage.getItem('onceLoad') ? false : true)
   const onceLoad = ref(true)
+  const JWT = ref(localStorage.getItem('token') || '')
   function toggleTheme() {
     theme.value = theme.value === 'light' ? 'dark' : 'light'
   }
   function toggleAwaitLoad() {
     awaitLoad.value = !awaitLoad.value
+  }
+  function toggleJWT(jwt: string) {
+    JWT.value = jwt
   }
 
   watch(theme, (newTheme) => {
@@ -18,5 +22,5 @@ export const useCounterStore = defineStore('counter', () => {
     document.documentElement.className = newTheme
   })
 
-  return { theme, toggleTheme, awaitLoad, toggleAwaitLoad, onceLoad }
+  return { theme, toggleTheme, awaitLoad, toggleAwaitLoad, onceLoad, JWT, toggleJWT }
 })

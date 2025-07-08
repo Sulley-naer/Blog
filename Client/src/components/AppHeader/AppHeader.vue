@@ -11,7 +11,9 @@ const proximityThreshold = 300
 const mouseMoveTimer = ref<NodeJS.Timeout | null>(null)
 const inactivityTimeout = 500
 
-const isLoggedIn = ref(false)
+const isLoggedIn = computed(() => {
+  return store.JWT !== ''
+})
 const user = ref({
   name: '张三',
   avatar: computed(() => {
@@ -21,6 +23,7 @@ const user = ref({
   }),
   email: 'zhangsan@wudang.com'
 })
+
 
 const handleMouseMove = (event: MouseEvent) => {
   if (headerInnerRef.value) {
@@ -53,7 +56,7 @@ const handleMouseLeave = () => {
 }
 
 const handleLogout = () => {
-  isLoggedIn.value = false
+  store.toggleJWT('')
   console.log('用户已退出登录')
 }
 
