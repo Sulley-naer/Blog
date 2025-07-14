@@ -97,9 +97,10 @@ defineOptions({ name: 'LoginPage' })
 import { ref, onMounted, computed } from 'vue'
 import { gsap } from 'gsap'
 import { useCounterStore } from '@/stores/counter'
-import { useAuroraBackground } from '@/myCanvasJs/useAuroraBackground'
-import { useMouseTrail } from '@/myCanvasJs/useMouseTrail'
+import { useAuroraBackground } from '@/AnimationJs/useAuroraBackground'
+import { useMouseTrail } from '@/AnimationJs/useMouseTrail'
 import { Login } from '@/utils/apis/user'
+import type { TLoginResponse } from '@/types/apiType'
 
 const store = useCounterStore()
 
@@ -191,16 +192,12 @@ const handleLogin = async () => {
       password: registerBody.value.password,
       rememberMe: registerBody.value.rememberMe,
     })
-    const { refetch } = await Login(registerBody.value.username, registerBody.value.password)
-    console.log(
-      refetch()
-        .then((res) => {
-          console.log('res', res)
-        })
-        .catch((err) => {
-          console.error('Error:', err)
-        }),
-    )
+    const { data, refetch } = await Login(registerBody.value.username, registerBody.value.password)
+    await refetch()
+    const responseData = data.value as TLoginResponse
+    if (registerBody.value.rememberMe)
+      localStorage.setItem('token', responseData.data);
+    store.toggleJWT(responseData.data)
   } else {
     console.log('验证码登录:', {
       username: registerBody.value.username,

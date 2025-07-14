@@ -1,4 +1,4 @@
-import { useLazyFetch } from '@/utils/useFetch'
+import { useLazyFetch } from '@/utils/useFetch.js'
 
 export const Login = (userName: string, password: string) => {
   if (!userName && !password) {
@@ -19,7 +19,6 @@ export const Login = (userName: string, password: string) => {
 @param {string} email - 邮箱
 @param {string} captcha - 验证码
 */
-
 export const Registered = (userName: string, password: string, email: string, captcha: string) => {
   const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 

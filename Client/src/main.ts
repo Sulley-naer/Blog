@@ -1,6 +1,7 @@
 import './assets/styles/theme.scss'
 import './assets/styles/style.scss'
 import './assets/styles/highlight.scss'
+import 'highlight.js/styles/github-dark.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { useCounterStore } from './stores/counter'

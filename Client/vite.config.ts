@@ -6,6 +6,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import Pages from 'vite-plugin-pages'
 
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -39,20 +40,28 @@ export default defineConfig({
     },
   },
 
-  //TODO 把这里的服务器IP用 env 文件变量来配置,不会bing vite env 文件读取 还能优化到 开发与生产环境自动切换地址
+  // 支持通过 .env 文件配置服务器地址，自动区分开发/生产环境
   server: {
     host: '0.0.0.0',
     cors: {
-      origin: ['ra6368f6.natappfree.cc'],
+      origin: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
       credentials: true,
     },
-    allowedHosts: ['ra6368f6.natappfree.cc'],
+    allowedHosts: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
     proxy: {
       '/api': {
-        target: 'http://ra6368f6.natappfree.cc',
+        target: 'http://m6ebcdfb.natappfree.cc',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/gh-proxy': {
+        target: 'https://raw.githubusercontent.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/gh-proxy/, ''),
       },
     },
   },
 })
+
+console.log('VITE_API_TARGET:', process.env.VITE_API_TARGET); // 启动时查看终端输出
+

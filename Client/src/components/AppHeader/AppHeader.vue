@@ -3,7 +3,7 @@ import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useCounterStore } from '@/stores/counter'
 import HeaderAuth from './HeaderAuth.vue'
 import ThemeToggle from './ThemeToggle.vue'
-import router from '@/router'
+import GithubIcon from './GithubIcon.vue'
 
 const store = useCounterStore()
 const headerInnerRef = ref<HTMLElement | null>(null)
@@ -11,7 +11,9 @@ const proximityThreshold = 300
 const mouseMoveTimer = ref<NodeJS.Timeout | null>(null)
 const inactivityTimeout = 500
 
-const isLoggedIn = ref(false)
+const isLoggedIn = computed(() => {
+  return store.JWT !== ''
+})
 const user = ref({
   name: '张三',
   avatar: computed(() => {
@@ -21,6 +23,7 @@ const user = ref({
   }),
   email: 'zhangsan@wudang.com'
 })
+
 
 const handleMouseMove = (event: MouseEvent) => {
   if (headerInnerRef.value) {
@@ -53,7 +56,7 @@ const handleMouseLeave = () => {
 }
 
 const handleLogout = () => {
-  isLoggedIn.value = false
+  store.toggleJWT('')
   console.log('用户已退出登录')
 }
 
@@ -80,16 +83,20 @@ watch(() => store.theme, () => {
     <div class="header-inner" ref="headerInnerRef">
       <div class="glow-layer"></div>
       <div class="header-content">
-        <div class="logo">MyCoolBlog</div>
+        <router-link to="/" class="logo">MyCoolBlog</router-link>
         <nav class="navigation">
           <div class="nav-links">
-            <a href="#" class="nav-link active" @click="() => { router.push('/') }">首页</a>
-            <a href="#" class="nav-link">归档</a>
-            <a href="#" class="nav-link">关于</a>
+            <router-link to="/" class="nav-link">首页</router-link>
+            <router-link to="/post" class="nav-link">文章</router-link>
+            <router-link to="/about" class="nav-link">关于</router-link>
           </div>
           <div class="nav-actions">
             <HeaderAuth :is-logged-in="isLoggedIn" :user="user" @logout="handleLogout" />
             <ThemeToggle />
+            <a href="https://github.com/Sulley-naer/Blog" target="_blank" rel="noopener noreferrer"
+              class="action-icon-btn" aria-label="GitHub">
+              <GithubIcon class="action-icon" />
+            </a>
           </div>
         </nav>
       </div>
@@ -152,6 +159,7 @@ watch(() => store.theme, () => {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--primary-color);
+  text-decoration: none;
 }
 
 .navigation {
@@ -169,24 +177,50 @@ watch(() => store.theme, () => {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-.nav-link {
-  color: var(--text-color-secondary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-
-  &:hover,
-  &.active {
-    color: var(--primary-color);
+  gap: 0.75rem;
+    /* 稍微减小间距，让图标按钮更紧凑 */
   }
-}
+  
+  .nav-link {
+    color: var(--text-color-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  
+    &:hover {
+      color: var(--primary-color);
+    }
+  
+    &.router-link-exact-active {
+      color: var(--primary-color);
+      font-weight: 600;
+  /* **3. 新增图标按钮的样式** */
+    .action-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 6px;
+      color: var(--text-color);
+      transition: background-color 0.2s ease, color 0.2s ease;
+  
+      &:hover {
+        background-color: var(--background-color);
+        color: var(--primary-color);
+      }
+  
+      .action-icon {
+        width: 22px;
+        height: 22px;
+      }
+    }
 
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
   }
 }
 </style>

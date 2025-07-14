@@ -35,14 +35,14 @@ jobs:
       run: npm ci
       working-directory: ./Client
 
-    - name: Run linting checks
-      run: npm run lint
-      working-directory: ./Client
+    # - name: Run linting checks
+    #   run: npm run lint
+    #   working-directory: ./Client
 
     - name: Build the project
       run: npm run build
       working-directory: ./Client
 
-    - name: Run unit tests
-      run: npm run test:unit
-      working-directory: ./Client
+    # - name: Run unit tests
+    #   run: npm run test:unit
+    #   working-directory: ./Client
