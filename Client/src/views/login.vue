@@ -13,9 +13,14 @@
         <div class="input-group">
           <label for="username">用户名/邮箱</label>
           <div class="glass-input">
-            <input type="text" id="username" :value="registerBody.username ?? ''"
-              @blur="registerBody.username = ($event.target as HTMLInputElement).value" placeholder="请输入用户名或邮箱"
-              required />
+            <input
+              type="text"
+              id="username"
+              :value="registerBody.username ?? ''"
+              @blur="registerBody.username = ($event.target as HTMLInputElement).value"
+              placeholder="请输入用户名或邮箱"
+              required
+            />
           </div>
         </div>
 
@@ -24,15 +29,23 @@
             <div class="input-group">
               <label for="password">密码</label>
               <div class="glass-input">
-                <input type="password" id="password" :value="registerBody.password ?? ''"
-                  @blur="registerBody.password = ($event.target as HTMLInputElement).value" placeholder="请输入密码"
-                  required />
+                <input
+                  type="password"
+                  id="password"
+                  :value="registerBody.password ?? ''"
+                  @blur="registerBody.password = ($event.target as HTMLInputElement).value"
+                  placeholder="请输入密码"
+                  required
+                />
               </div>
             </div>
             <div class="form-options">
               <label class="checkbox-container">
-                <input type="checkbox" :checked="registerBody.rememberMe ?? false"
-                  @change="registerBody.rememberMe = ($event.target as HTMLInputElement).checked" />
+                <input
+                  type="checkbox"
+                  :checked="registerBody.rememberMe ?? false"
+                  @change="registerBody.rememberMe = ($event.target as HTMLInputElement).checked"
+                />
                 <span class="checkmark"></span>
                 记住我
               </label>
@@ -44,10 +57,20 @@
             <div class="input-group verification-group">
               <label for="verificationCode">邮箱验证码</label>
               <div class="glass-input with-button">
-                <input type="text" id="verificationCode" :value="registerBody.verificationCode ?? ''"
+                <input
+                  type="text"
+                  id="verificationCode"
+                  :value="registerBody.verificationCode ?? ''"
                   @blur="registerBody.verificationCode = ($event.target as HTMLInputElement).value"
-                  placeholder="请输入6位验证码" required />
-                <button type="button" class="send-code-btn" @click="sendVerificationCode" :disabled="isSendingCode">
+                  placeholder="请输入6位验证码"
+                  required
+                />
+                <button
+                  type="button"
+                  class="send-code-btn"
+                  @click="sendVerificationCode"
+                  :disabled="isSendingCode"
+                >
                   {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
                 </button>
               </div>
@@ -82,17 +105,6 @@ const store = useCounterStore()
 
 const loginMode = ref<'password' | 'emailCode'>('password')
 
-//TODO 用对象装属性 data.name 别开一堆变量挂ref 和 v-model 更新数据 性能太差了
-/*
-  <input
-    type="text"
-    id="username"
-    :value="username"
-    @blur="username = ($event.target as HTMLInputElement).value"
-    placeholder="请输入用户名或邮箱"
-    required
-  />
-*/
 const isSendingCode = ref(false)
 const countdown = ref(0)
 
@@ -101,9 +113,8 @@ const registerBody = ref({
   email: '',
   password: '',
   verificationCode: '',
-  rememberMe: false
+  rememberMe: false,
 })
-
 
 const backgroundCanvas = ref<HTMLCanvasElement | null>(null)
 const trailCanvas = ref<HTMLCanvasElement | null>(null)
@@ -181,13 +192,20 @@ const handleLogin = async () => {
       rememberMe: registerBody.value.rememberMe,
     })
     const { refetch } = await Login(registerBody.value.username, registerBody.value.password)
-    console.log(refetch().then(res => {
-      console.log("res", res)
-    }).catch(err => {
-      console.error("Error:", err)
-    }))
+    console.log(
+      refetch()
+        .then((res) => {
+          console.log('res', res)
+        })
+        .catch((err) => {
+          console.error('Error:', err)
+        }),
+    )
   } else {
-    console.log('验证码登录:', { username: registerBody.value.username, code: registerBody.value.verificationCode })
+    console.log('验证码登录:', {
+      username: registerBody.value.username,
+      code: registerBody.value.verificationCode,
+    })
   }
 }
 

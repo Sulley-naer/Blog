@@ -46,7 +46,7 @@ export default defineConfig({
       origin: ['ra6368f6.natappfree.cc'],
       credentials: true,
     },
-    allowedHosts: ['ra6368f6.natappfree.cc'],
+    allowedHosts: ['p85b4748.natappfree.cc'],
     proxy: {
       '/api': {
         target: 'http://ra6368f6.natappfree.cc',
