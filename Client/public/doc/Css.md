@@ -72,7 +72,7 @@ node 环境使用提前预留效果 [文档|代理](https://www.npmjs.com/packag
 
 ```bash
 # 路径 -o 输出文件 输出文件路径名称
-npx postcss src/index.css -o dist/index.css
+npx postcss src/style.css -o dist/style.css
 ```
 
 配置文件
@@ -121,7 +121,7 @@ export default defineConfig({
 测试 css Vite 中配置的只会再 Vite 网页中看到，Node 运行的只认 postcss.config.js [查看兼容](https://developer.mozilla.org/zh-CN/docs/Web/CSS/clamp#浏览器兼容性)
 
 ```css
-/* index.css */
+/* style.css */
 .container {
   width: clamp(200px, 50%, 800px);
 }

@@ -12,6 +12,10 @@
     }
   ],
   "compilerOptions": {
-    "module": "ESNext"
-  }
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
 }
