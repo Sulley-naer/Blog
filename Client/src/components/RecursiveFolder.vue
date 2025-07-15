@@ -97,7 +97,7 @@ const onLeave = (el: Element, done: () => void) => {
             <!-- 文件 -->
             <div v-else class="file-item">
                 <template v-if="item.name.endsWith('.md')">
-                    <router-link :to="{ path: '/post/detail', query: { path: item.path } }" class="file-link">
+                    <router-link :to="{ path: '/post/articleDetail', query: { path: item.path } }" class="file-link">
                         <svg class="file-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>

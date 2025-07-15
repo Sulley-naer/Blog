@@ -1,4 +1,4 @@
-import { useLazyFetch } from '@/utils/useFetch'
+import { useLazyFetch } from "../useFetch.js"
 
 export const registeredCaptcha = (email: string) => {
   const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/

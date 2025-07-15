@@ -14,7 +14,7 @@ export function useLazyFetch<T = unknown>(url: string, options: UseFetchOptions 
   const error = ref<Error | null>(null)
   const loading = ref(false)
 
-  const _url = 'http://m6ebcdfb.natappfree.cc/auth'
+  const _url = 'http://127.0.0.1:8080/auth'
   const finalUrl = url.startsWith('http') ? url : _url + url
 
   const fetchData = async (): Promise<T | null> => {

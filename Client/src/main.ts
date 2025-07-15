@@ -9,6 +9,7 @@ import { useCounterStore } from './stores/counter'
 import App from './App.vue'
 import router from './router'
 import { isRouting } from './stores/routing'
+import "@/style.css"
 
 const app = createApp(App)
 

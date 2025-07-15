@@ -1,3 +1,3 @@
-@echo
+.\natapp -authtoken=3983274f956ccb2b
 
-.\natapp -authtoken=c597c4e134b03346
+pause

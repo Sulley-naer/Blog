@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { renderMarkdownToHtml } from '@/utils/markdownParser'
-import film from '@/components/film.vue'
+import IndexFilm from '@/components/IndexFilm.vue'
 import BackToTop from '@/components/BackToTop.vue'
 
 const route = useRoute()
@@ -12,17 +12,16 @@ const postTitle = ref<string>('')
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
-
 // 统一与 index.vue 的 GitHub API 方式，支持私有仓库和 token
 const GITHUB_REPO_API = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents/'
-const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN
 
 const fetchOptions = {
   headers: {
-    'Authorization': `token ${GITHUB_TOKEN}`,
-    'Accept': 'application/vnd.github.v3.raw',
+    Authorization: `token ${GITHUB_TOKEN}`,
+    Accept: 'application/vnd.github.v3.raw',
   },
-};
+}
 
 const fetchAndRenderMarkdown = async (filePath: string | string[]) => {
   if (!filePath || Array.isArray(filePath)) {
@@ -61,7 +60,7 @@ watch(
     if (newPath) {
       fetchAndRenderMarkdown(newPath as string)
     }
-  }
+  },
 )
 </script>
 
@@ -69,10 +68,10 @@ watch(
   <div class="post-page">
     <BackToTop />
     <div class="filmBox1">
-      <film />
+      <index-film />
     </div>
     <div class="filmBox2">
-      <film />
+      <index-film />
     </div>
     <main class="post-container">
       <div class="back-link-wrapper">
@@ -192,7 +191,9 @@ watch(
 
 .fade-up-enter-active,
 .fade-up-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .fade-up-enter-from,

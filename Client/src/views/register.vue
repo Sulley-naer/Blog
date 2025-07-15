@@ -148,7 +148,7 @@ const sendVerificationCode = async () => {
   }, 1000)
 
   try {
-    const { refetch } = await registeredCaptcha(userRegistered.value.email)
+    const { refetch } = registeredCaptcha(userRegistered.value.email)
     refetch().then(() => {
       countdown.value = 60
     }).catch(() => {

@@ -1,6 +1,9 @@
 {
   "extends": "./tsconfig.app.json",
-  "include": ["src/**/__tests__/*", "env.d.ts", "src/**/*.vue", "src/components/__tests__/index/AppFooter.spec.ts", "src/components/__tests__/index/HeroSection.spec.ts", "src/components/__tests__/index/PostCard.spec.ts", "src/components/__tests__/index/PostList.spec.ts"],
+  "include": [
+    "env.d.ts",
+    "src/**/*"
+  ],
   "exclude": [],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.vitest.tsbuildinfo",
