@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useCounterStore } from '@/stores/counter'
-import * as echarts from 'echarts'
+import echarts from 'echarts'
 import gsap from 'gsap'
 
 const store = useCounterStore()

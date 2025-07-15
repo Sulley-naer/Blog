@@ -1,13 +1,12 @@
-import { fileURLToPath, URL } from 'node:url'
-
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import Pages from 'vite-plugin-pages'
+import * as path from 'node:path'
 
 // https://vite.dev/config/
-export default defineConfig({
+const configuration = defineConfig({
   plugins: [
     vue(),
     vueJsx(),
@@ -19,7 +18,7 @@ export default defineConfig({
   assetsInclude: ['**/*.lottie'],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   test: {
@@ -46,7 +45,7 @@ export default defineConfig({
       origin: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
       credentials: true,
     },
-    allowedHosts: [process.env.VITE_ALLOWED_ORIGIN || 'localhost'],
+    allowedHosts: ['p85b4748.natappfree.cc', 'near.natapp1.cc'],
     proxy: {
       '/api': {
         target: 'http://m6ebcdfb.natappfree.cc',
@@ -62,4 +61,13 @@ export default defineConfig({
   },
 })
 
-console.log('VITE_API_TARGET:', process.env.VITE_API_TARGET) // 启动时查看终端输出
+// mode 为当前环境 开发与生产 可通过变量实现动态替换配置
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd())
+
+  console.log('VITE_SERVER_PATH:', env.VITE_SERVER_PATH)
+
+  return {
+    ...configuration
+  }
+})

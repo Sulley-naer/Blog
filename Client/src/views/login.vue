@@ -192,7 +192,7 @@ const handleLogin = async () => {
       password: registerBody.value.password,
       rememberMe: registerBody.value.rememberMe,
     })
-    const { data, refetch } = await Login(registerBody.value.username, registerBody.value.password)
+    const { data, refetch } = Login(registerBody.value.username, registerBody.value.password)
     await refetch()
     const responseData = data.value as TLoginResponse
     if (registerBody.value.rememberMe)

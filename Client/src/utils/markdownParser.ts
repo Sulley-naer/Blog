@@ -33,6 +33,6 @@ marked.use({
  * @returns 渲染后的 HTML 字符串
  */
 export async function renderMarkdownToHtml(markdownText: string): Promise<string> {
-  const rawHtml = await marked.parse(markdownText)
+  const rawHtml = marked.parse(markdownText)
   return rawHtml
 }
