@@ -46,6 +46,7 @@ buildNumber.properties
 # Client
 Client/node_modules/*
 Client/dist/*
+Client/.env
 Client/.env.local
 Client/.env.development
 Client/.env.production

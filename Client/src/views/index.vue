@@ -4,7 +4,6 @@ import HeroSection from '@/components/index/HeroSection.vue'
 import FeatureGrid from '@/components/index/FeatureGrid.vue'
 import AppFooter from '@/components/index/AppFooter.vue'
 import BackToTop from '@/components/BackToTop.vue'
-import { Button } from '@/components/ui/button'
 
 defineOptions({
   name: 'HomePage'
@@ -12,17 +11,15 @@ defineOptions({
 </script>
 
 <template>
-  <div class="home-page">
-    <BackToTop />
-    <HeroSection />
-    <main class="main-content">
-      <FeatureGrid />
-      <Button size='lg'>button</Button>
-      <div class="bg-green-500 text-white p-4">Test</div>
-    </main>
+    <div class="home-page">
+        <BackToTop />
+        <main class="main-content">
+            <HeroSection />
+            <FeatureGrid />
+        </main>
 
-    <AppFooter />
-  </div>
+        <AppFooter />
+    </div>
 </template>
 
 <style scoped lang="scss">
