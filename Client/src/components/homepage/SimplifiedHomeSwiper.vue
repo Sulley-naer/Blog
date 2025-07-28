@@ -41,7 +41,6 @@ import HeroSection from './HeroSection.vue'
 import AboutSection from './AboutSection.vue'
 import ServicesSection from './ServicesSection.vue'
 import ContactSection from './ContactSection.vue'
-import HomeFooter from './HomeFooter.vue'
 
 // Swiper 模块
 const modules = [Mousewheel, Keyboard]

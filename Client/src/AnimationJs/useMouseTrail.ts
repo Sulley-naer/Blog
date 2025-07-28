@@ -26,7 +26,6 @@ export function useMouseTrail(canvasRef: Ref<HTMLCanvasElement | null>, isDarkMo
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!canvasRef.value) return
-    const rect = canvasRef.value.getBoundingClientRect()
     mouseX = e.pageX
     mouseY = e.pageY
     createTrailParticle(mouseX, mouseY)

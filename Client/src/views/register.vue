@@ -115,7 +115,6 @@ const isSendingCode = ref<boolean>(false)
 const countdown = ref<number>(0)
 
 const backgroundCanvas = ref<HTMLCanvasElement | null>(null)
-const trailCanvas = ref<HTMLCanvasElement | null>(null)
 const registerForm = ref<HTMLElement | null>(null)
 
 const isDarkMode = computed(() => store.theme === 'dark')

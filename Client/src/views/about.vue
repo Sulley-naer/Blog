@@ -37,6 +37,10 @@
 import { ref, onMounted, nextTick, onUnmounted } from 'vue'
 import imagesLoaded from 'imagesloaded'
 
+defineOptions({
+  name: 'aboutPage',
+})
+
 const loading = ref(true)
 const progress = ref(0)
 const images = Array.from({ length: 12 }, () => 'https://www.dmoe.cc/random.php')
