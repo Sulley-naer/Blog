@@ -50,9 +50,9 @@ onUnmounted(() => {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000; /* Increased from 100 to ensure it stays above all content */
+  z-index: 1000;
   padding: 20px 0;
-  height: 90px; /* Explicit height for consistent calculations */
+  height: 90px;
   transition: all 0.3s ease;
 
   &.scrolled {

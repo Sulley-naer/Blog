@@ -19,7 +19,6 @@
       </swiper-slide>
     </swiper>
 
-    <!-- 简化版导航指示器 -->
     <div class="swiper-pagination-custom">
       <div
         v-for="(section, index) in sections"
@@ -38,7 +37,6 @@ import { Mousewheel, Keyboard } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
 import 'swiper/css'
 
-// 导入所有部分组件
 import HeroSection from './HeroSection.vue'
 import AboutSection from './AboutSection.vue'
 import ServicesSection from './ServicesSection.vue'
@@ -48,17 +46,16 @@ import HomeFooter from './HomeFooter.vue'
 // Swiper 模块
 const modules = [Mousewheel, Keyboard]
 
-// 响应式数据
+// data
 const activeIndex = ref(0)
 const swiperInstance = ref<SwiperType | null>(null)
 
-// 定义所有部分
+// 定义所有部分名称
 const sections = [
   { component: HeroSection, label: '首页' },
   { component: AboutSection, label: '关于' },
   { component: ServicesSection, label: '服务' },
   { component: ContactSection, label: '联系' },
-  { component: HomeFooter, label: '底部' },
 ]
 
 // Swiper 事件处理

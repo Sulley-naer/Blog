@@ -111,10 +111,8 @@ const formData = reactive({
 
 const handleSubmit = () => {
   console.log('Form submitted:', formData)
-  // 这里可以添加表单提交逻辑
   alert('消息已发送！我们会尽快回复您。')
 
-  // 重置表单
   formData.name = ''
   formData.email = ''
   formData.subject = ''

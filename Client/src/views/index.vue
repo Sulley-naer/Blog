@@ -1,21 +1,14 @@
 <template>
   <div class="homepage">
-    <!-- Animated background particles -->
     <AnimatedParticles />
-
-    <!-- Header -->
     <HomeHeader />
-
-    <!-- Swiper Container with all sections -->
     <HomeSwiper />
-
-    <!-- Footer -->
     <HomeFooter />
   </div>
 </template>
 
 <script setup lang="ts">
-// 定义组件名称
+// 组件名称
 defineOptions({
   name: 'HomePage',
 })

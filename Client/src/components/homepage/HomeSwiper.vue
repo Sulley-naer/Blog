@@ -22,7 +22,6 @@
       </swiper-slide>
     </swiper>
 
-    <!-- 简化版导航指示器 -->
     <div class="swiper-pagination-custom">
       <div
         v-for="(section, index) in sectionsWithoutFooter"
@@ -41,20 +40,16 @@ import { Mousewheel, Keyboard } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
 import 'swiper/css'
 
-// 导入所有部分组件
 import HeroSection from './HeroSection.vue'
 import AboutSection from './AboutSection.vue'
 import ServicesSection from './ServicesSection.vue'
 import ContactSection from './ContactSection.vue'
 
-// Swiper 模块
 const modules = [Mousewheel, Keyboard]
 
-// 响应式数据
 const activeIndex = ref(0)
 const swiperInstance = ref<SwiperType | null>(null)
 
-// 定义所有部分（不包括footer）
 const sectionsWithoutFooter = [
   { component: HeroSection, label: '首页' },
   { component: AboutSection, label: '关于' },
@@ -62,7 +57,6 @@ const sectionsWithoutFooter = [
   { component: ContactSection, label: '联系' }
 ]
 
-// Swiper 事件处理
 const onSwiper = (swiper: SwiperType) => {
   swiperInstance.value = swiper
 }
@@ -79,7 +73,6 @@ const goToSlide = (index: number) => {
   }
 }
 
-// 处理来自子组件的导航事件
 const handleNavigateToSlide = (index: number) => {
   goToSlide(index)
 }
@@ -107,7 +100,6 @@ const handleNavigateToSlide = (index: number) => {
     overflow: hidden;
   }
 
-  /* 为包含footer的slide添加特殊类 */
   .swiper-slide.footer-slide {
     height: auto;
     min-height: 100vh;
@@ -123,7 +115,6 @@ const handleNavigateToSlide = (index: number) => {
     z-index: 1;
   }
 
-  /* 简化版分页指示器 */
   .swiper-pagination-custom {
     position: fixed;
     right: 30px;

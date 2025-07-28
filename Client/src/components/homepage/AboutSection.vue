@@ -45,18 +45,14 @@
 </template>
 
 <script setup lang="ts">
-// 组件逻辑
 </script>
 
 <style scoped lang="scss">
 .about {
   min-height: 100vh;
   display: flex;
-  /* 修改 align-items 为 flex-start，让内容靠近顶部 */
   align-items: flex-start;
-  /* 保持 justify-content: center 使内容水平居中 */
   justify-content: center;
-  /* 添加一些顶部间距 */
   padding-top: 100px;
 }
 
@@ -68,7 +64,6 @@
 
 .section-header {
   text-align: center;
-  /* 减少底部边距，使标题更靠近顶部 */
   margin-bottom: 40px;
 }
 

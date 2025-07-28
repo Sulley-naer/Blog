@@ -62,7 +62,7 @@
   // 定义emit事件
   const emit = defineEmits(['navigateToSlide'])
 
-  // Features data
+  // data
   const features = reactive([
     {
       id: 1,
@@ -84,7 +84,7 @@
     },
   ])
 
-  // Floating cards data
+  // Floating cards dataType
   interface FloatingCard {
     id: number
     title: string
@@ -121,12 +121,10 @@
   // Methods
   const handleExploreNotes = () => {
     console.log('探索笔记')
-    // 这里可以使用 router.push('/notes') 或 emit 事件
   }
 
   const handleLearnMore = () => {
     console.log('了解更多')
-    // 发送事件通知HomeSwiper切换到第二页（索引为1）
     emit('navigateToSlide', 1)
   }
 
