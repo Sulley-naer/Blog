@@ -1,6 +1,7 @@
 import './assets/styles/theme.scss'
 import './assets/styles/style.scss'
 import './assets/styles/highlight.scss'
+import './assets/styles/swiper-overrides.scss'
 import 'highlight.js/styles/github-dark.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -9,7 +10,7 @@ import { useCounterStore } from './stores/counter'
 import App from './App.vue'
 import router from './router'
 import { isRouting } from './stores/routing'
-import "@/style.css"
+import '@/style.css'
 
 const app = createApp(App)
 

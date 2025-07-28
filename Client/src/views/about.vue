@@ -12,19 +12,16 @@
                 <h2>abc</h2>
             </header>
 
-            <!-- 第一行文字 -->
             <section class="demo-text">
                 <div ref="first" class="wrapper text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
             </section>
 
-            <!-- 图片区 -->
             <section class="demo-gallery">
                 <ul ref="gallery" class="wrapper">
                     <li v-for="(img, i) in images" :key="i"><img :src="img" /></li>
                 </ul>
             </section>
 
-            <!-- 第二行文字 -->
             <section class="demo-text last">
                 <div ref="second" class="wrapper text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
             </section>
@@ -108,7 +105,6 @@ onMounted(async () => {
             loading.value = false
             container.value?.addEventListener('scroll', scrollHandler)
 
-            // 初始化：第一行文字从左侧滑入，第二行文字全右侧
             onScroll()
         })
 })

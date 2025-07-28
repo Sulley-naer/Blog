@@ -15,8 +15,8 @@
     "useDefineForClassFields": true,
     "composite": true,
     "types": ["node", "jsdom", "vue"],
-    "jsx": "preserve",                     // ✅ 必须加
-    "jsxFactory": "h",                     // ✅ Vue 3 JSX 需要
-    "jsxFragmentFactory": "Fragment",     // ✅ 支持 <></>
+    "jsx": "preserve",                     
+    "jsxFactory": "h",                   
+    "jsxFragmentFactory": "Fragment",    
   }
 }

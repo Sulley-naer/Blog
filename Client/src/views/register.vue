@@ -1,7 +1,7 @@
 <template>
   <div class="register-container">
     <canvas ref="backgroundCanvas" class="background-canvas"></canvas>
-    <canvas ref="trailCanvas" class="trail-canvas"></canvas>
+     <MouseFireworks/>
     <div class="register-form" ref="registerForm">
       <div class="form-content-wrapper" ref="formContentWrapper">
         <!-- ===== 步骤一 ===== -->
@@ -90,12 +90,11 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { gsap } from 'gsap'
 import { useCounterStore } from '@/stores/counter'
 import { useAuroraBackground } from '@/AnimationJs/useAuroraBackground'
-import { useMouseTrail } from '@/AnimationJs/useMouseTrail'
-import FormError from '@/components/FormError.vue'
+import FormError from '@/components/general/FormError.vue'
 import { registeredCaptcha } from '@/utils/apis/public'
 import { Registered } from '@/utils/apis/user'
 import router from '@/router'
-
+import MouseFireworks from '@/components/decorative/mouseFireworks.vue'
 
 const store = useCounterStore()
 const registrationStep = ref(1)
@@ -122,7 +121,7 @@ const registerForm = ref<HTMLElement | null>(null)
 const isDarkMode = computed(() => store.theme === 'dark')
 
 useAuroraBackground(backgroundCanvas, isDarkMode)
-useMouseTrail(trailCanvas, isDarkMode)
+// useMouseTrail(trailCanvas, isDarkMode)
 
 const setupIntroAnimation = () => {
   gsap.from(registerForm.value, {
