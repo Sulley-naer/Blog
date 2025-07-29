@@ -42,7 +42,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
 import RippleButton from '@/components/ui/RippleButton.vue'
 import { renderMarkdownToHtml } from '@/utils/markdownParser'
-import { getGithubContents } from '@/utils/apis/githubApi' // 引入GitHub API函数
+import { getGithubContentsWithCache } from '@/utils/apis/githubApi' // 引入带缓存的GitHub API函数
 
 // 响应式数据
 const renderedContent = ref<string>('')
@@ -54,13 +54,54 @@ const fileName = ref<string>('')
 const route = useRoute()
 const router = useRouter()
 
-// 获取Markdown内容
+/**
+ * 获取Markdown内容（带30分钟缓存）
+ * @param url - GitHub API URL
+ * @returns Promise<void>
+ */
+const fetchMarkdownContentWithCache = async (url: string) => {
+  loading.value = true
+  error.value = ''
+
+  try {
+    // 使用带缓存的githubApi.ts中的函数获取文件信息，缓存时间为30分钟
+    const response = await getGithubContentsWithCache(url, 30 * 60 * 1000)
+    const data = response.data
+
+    // 获取文件名
+    fileName.value = data.name || '文档'
+
+    // 正确解码Base64内容（支持UTF-8编码的中文字符）
+    const binaryString = atob(data.content)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    const content = new TextDecoder('utf-8').decode(bytes)
+
+    // 解析Markdown为HTML
+    renderedContent.value = await renderMarkdownToHtml(content)
+  } catch (err) {
+    console.error('获取Markdown内容失败:', err)
+    error.value = err.message || '获取内容时发生未知错误'
+  } finally {
+    loading.value = false
+  }
+}
+
+/**
+ * 获取Markdown内容（不使用缓存）
+ * @param url - GitHub API URL
+ * @returns Promise<void>
+ */
 const fetchMarkdownContent = async (url: string) => {
   loading.value = true
   error.value = ''
 
   try {
-    // 使用githubApi.ts中的函数获取文件信息
+    // 导入不带缓存的函数
+    const { getGithubContents } = await import('@/utils/apis/githubApi')
+    // 使用不带缓存的githubApi.ts中的函数获取文件信息
     const response = await getGithubContents(url)
     const data = response.data
 
@@ -89,7 +130,7 @@ const fetchMarkdownContent = async (url: string) => {
 const refreshContent = () => {
   const url = route.query.url as string
   if (url) {
-    fetchMarkdownContent(url)
+    fetchMarkdownContent(url) // 刷新时强制获取最新内容，不使用缓存
   }
 }
 
@@ -102,7 +143,7 @@ const goBack = () => {
 onMounted(() => {
   const url = route.query.url as string
   if (url) {
-    fetchMarkdownContent(url)
+    fetchMarkdownContentWithCache(url) // 首次加载时使用30分钟缓存
   } else {
     error.value = '未提供文件URL'
   }

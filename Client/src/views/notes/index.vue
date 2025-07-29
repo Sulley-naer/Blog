@@ -4,9 +4,9 @@
     <div class="notes-container glass-container">
       <div class="header-section">
         <h1 class="page-title">我的笔记</h1>
-        <p class="page-subtitle">探索和管理您的知识库</p>
+        <p class="page-subtitle">探索我的知识库</p>
 
-        <div class="action-buttons">
+        <!-- <div class="action-buttons">
           <RippleButton variant="primary" @click="handleCreateNote">
             <i class="fas fa-plus"></i>
             新建笔记
@@ -15,7 +15,7 @@
             <i class="fas fa-filter"></i>
             筛选
           </RippleButton>
-        </div>
+        </div> -->
       </div>
 
       <!-- 面包屑导航 -->
@@ -88,7 +88,7 @@
     name: 'NotesPage',
   })
 
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted ,watch} from 'vue'
   import { useRouter } from 'vue-router'
   import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
   import RippleButton from '@/components/ui/RippleButton.vue'
@@ -147,7 +147,11 @@
     }
   }
 
-  // 处理项目点击
+  /**
+   * 处理项目点击事件
+   * @param item - 被点击的GitHub项目
+   * @returns Promise<void>
+   */
   const handleItemClick = (item: GithubItem) => {
     if (item.type === 'dir') {
       // 更新当前路径
@@ -155,13 +159,21 @@
 
       // 更新URL并获取新内容
       currentUrl.value = item.url
+
+      // 更新路由参数
+      router.push({
+        query: {
+          path: currentPath.value.map(p => p.path).join('/')
+        }
+      })
+
       fetchGithubContents(item.url)
     } else {
-      // 文件处理逻辑 - 跳转到showNotes页面
+      // 文件处理逻辑 - 跳转到showNote页面
       console.log('点击了文件:', item.name)
-      // 跳转到showNotes.vue并传递文件信息
+      // 跳转到showNote.vue并传递文件信息
       router.push({
-        path: '/notes/showNotes',
+        path: '/notes/showNote',
         query: {
           url: item.url,  // 传递文件的API URL
           name: item.name  // 传递文件名
@@ -170,14 +182,27 @@
     }
   }
 
-  // 导航到根目录
+  /**
+   * 导航到根目录
+   * @returns void
+   */
   const navigateToRoot = () => {
     currentPath.value = []
     currentUrl.value = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents'
+
+    // 更新路由参数
+    router.push({
+      query: {}
+    })
+
     fetchGithubContents()
   }
 
-  // 导航到指定路径
+  /**
+   * 导航到指定路径
+   * @param index - 路径索引
+   * @returns void
+   */
   const navigateToPath = (index: number) => {
     // 截取到指定索引的路径
     currentPath.value = currentPath.value.slice(0, index + 1)
@@ -185,6 +210,14 @@
     // 构造新的URL
     const path = currentPath.value[index].path
     currentUrl.value = `https://api.github.com/repos/Sulley-naer/Naer-Notes/contents/${path}`
+
+    // 更新路由参数
+    router.push({
+      query: {
+        path: currentPath.value.map(p => p.path).join('/')
+      }
+    })
+
     fetchGithubContents(currentUrl.value)
   }
 
@@ -193,7 +226,6 @@
     fetchGithubContents()
   }
 
-  // 获取项目图标
   /**
    * 根据文件类型获取对应的图标
    * @param item - GitHub项目对象
@@ -217,27 +249,58 @@
   }
 
   // 处理新建笔记
-  function handleCreateNote() {
-    console.log('创建新笔记')
+  // function handleCreateNote() {
+  //   console.log('创建新笔记')
     // 后续可以在这里添加创建笔记的逻辑
+  // }
+
+  // // 处理筛选笔记
+  // function handleFilterNotes() {
+  //   console.log('筛选笔记')
+    // 后续可以在这里添加筛选笔记的逻辑
+  // }
+
+  /**
+   * 初始化组件数据
+   * @returns void
+   */
+   const initialize = () => {
+  // 从路由参数中恢复路径
+  const pathParam = router.currentRoute.value.query.path as string
+  if (pathParam) {
+    const paths = pathParam.split('/')
+    currentPath.value = paths.map((path, index) => ({
+      name: path.split('/').pop() || path,
+      path: paths.slice(0, index + 1).join('/')
+    }))
+
+    // 更新当前URL
+    currentUrl.value = `https://api.github.com/repos/Sulley-naer/Naer-Notes/contents/${pathParam}`
+  } else {
+    // 如果没有参数，默认加载根目录
+    currentPath.value = []
+    currentUrl.value = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents'
   }
 
-  // 处理筛选笔记
-  function handleFilterNotes() {
-    console.log('筛选笔记')
-    // 后续可以在这里添加筛选笔记的逻辑
-  }
+  // 预加载文件夹结构
+  preloadFolderStructure().catch(err => {
+    console.warn('预加载文件夹结构失败:', err)
+  })
+
+  // 获取初始内容
+  fetchGithubContents(currentUrl.value)
+}
+
 
   // 组件挂载时获取初始内容
   onMounted(() => {
-    // 预加载文件夹结构
-    preloadFolderStructure().catch(err => {
-      console.warn('预加载文件夹结构失败:', err);
-    });
-
-    // 获取初始内容
-    fetchGithubContents()
+    initialize()
   })
+
+watch(() => router.currentRoute.value.query.path, () => {
+  initialize()
+}, { immediate: true })
+
   </script>
 
 <style scoped lang="scss">
@@ -502,4 +565,3 @@
   }
 }
 </style>
-<style scoped lang="ts"></style>
