@@ -1,10 +1,16 @@
 export interface GitHubContent {
   name: string
-  url: string
   path: string
   sha: string
-  type: 'file' | 'dir'
-  html_url: string
   size: number
+  url: string
+  html_url: string
+  git_url: string
   download_url: string | null
+  type: 'file' | 'dir'
+  _links: {
+    self: string
+    git: string
+    html: string
+  }
 }

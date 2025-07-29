@@ -92,31 +92,15 @@
   import { useRouter } from 'vue-router'
   import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
   import RippleButton from '@/components/ui/RippleButton.vue'
-  import { getGithubContents, preloadFolderStructure } from '@/utils/apis/githubApi' // 添加 preloadFolderStructure 导入
+  import { getGithubContentsViaProxy as getGithubContents } from '@/utils/apis/userGithubProxy'
+  import { preloadFolderStructureViaProxy as preloadFolderStructure } from '@/utils/apis/userGithubProxy'
+  import { GitHubContent } from '@/types/github'
 
   // 添加router实例
   const router = useRouter()
 
-  // GitHub内容接口定义
-  interface GithubItem {
-    name: string
-    path: string
-    sha: string
-    size: number
-    url: string
-    html_url: string
-    git_url: string
-    download_url: string | null
-    type: 'file' | 'dir'
-    _links: {
-      self: string
-      git: string
-      html: string
-    }
-  }
-
   // 响应式数据
-  const githubContents = ref<GithubItem[]>([])
+  const githubContents = ref<GitHubContent[]>([])
   const loading = ref<boolean>(false)
   const error = ref<string>('')
   const currentPath = ref<{name: string, path: string}[]>([])
@@ -130,6 +114,7 @@
     error.value = ''
 
     try {
+      // 使用自代理方式获取内容
       const response = await getGithubContents(url)
 
       // 过滤掉以特殊符号开头的文件和文件夹
@@ -152,7 +137,7 @@
    * @param item - 被点击的GitHub项目
    * @returns Promise<void>
    */
-  const handleItemClick = (item: GithubItem) => {
+  const handleItemClick = (item: GitHubContent) => {
     if (item.type === 'dir') {
       // 更新当前路径
       currentPath.value.push({ name: item.name, path: item.path })
@@ -231,7 +216,7 @@
    * @param item - GitHub项目对象
    * @returns 图标图片路径
    */
-  const getItemIcon = (item: GithubItem) => {
+  const getItemIcon = (item: GitHubContent) => {
     if (item.type === 'dir') {
       // 返回文件夹图标
       return new URL('@/assets/images/icon/folder.png', import.meta.url).href
@@ -247,18 +232,6 @@
       }
     }
   }
-
-  // 处理新建笔记
-  // function handleCreateNote() {
-  //   console.log('创建新笔记')
-    // 后续可以在这里添加创建笔记的逻辑
-  // }
-
-  // // 处理筛选笔记
-  // function handleFilterNotes() {
-  //   console.log('筛选笔记')
-    // 后续可以在这里添加筛选笔记的逻辑
-  // }
 
   /**
    * 初始化组件数据
@@ -282,7 +255,7 @@
     currentUrl.value = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents'
   }
 
-  // 预加载文件夹结构
+  // 预加载文件夹结构（仍然使用原来的githubApi）
   preloadFolderStructure().catch(err => {
     console.warn('预加载文件夹结构失败:', err)
   })

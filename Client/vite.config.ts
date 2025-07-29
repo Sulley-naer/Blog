@@ -62,6 +62,12 @@ const configuration = defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/github-api/, ''),
       },
+      // 添加新的代理配置用于本地GitHub代理服务器
+      '/github-proxy': {
+        target: 'http://192.168.31.77:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/github-proxy/, ''),
+      },
     },
   },
 })
@@ -73,6 +79,6 @@ export default defineConfig(({ mode }) => {
   console.log('VITE_SERVER_PATH:', env.VITE_SERVER_PATH)
 
   return {
-    ...configuration
+    ...configuration,
   }
 })

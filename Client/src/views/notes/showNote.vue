@@ -10,13 +10,11 @@
         </div>
       </div>
 
-      <!-- 内容加载状态 -->
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
         <p>正在加载内容...</p>
       </div>
 
-      <!-- 错误状态 -->
       <div v-else-if="error" class="error-state">
         <div class="error-icon">
           <i class="fas fa-exclamation-triangle"></i>
@@ -26,7 +24,6 @@
         <RippleButton variant="primary" @click="refreshContent">重新加载</RippleButton>
       </div>
 
-      <!-- Markdown内容展示 -->
       <div v-else class="markdown-content" v-html="renderedContent"></div>
     </div>
   </div>
@@ -42,15 +39,13 @@ import { useRoute, useRouter } from 'vue-router'
 import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
 import RippleButton from '@/components/ui/RippleButton.vue'
 import { renderMarkdownToHtml } from '@/utils/markdownParser'
-import { getGithubContentsWithCache } from '@/utils/apis/githubApi' // 引入带缓存的GitHub API函数
+import { getGithubContentsViaProxyWithCache as getGithubContentsWithCache, getGithubContentsViaProxy as getGithubContents } from '@/utils/apis/userGithubProxy'
 
-// 响应式数据
 const renderedContent = ref<string>('')
 const loading = ref<boolean>(false)
 const error = ref<string>('')
 const fileName = ref<string>('')
 
-// 路由
 const route = useRoute()
 const router = useRouter()
 
@@ -64,14 +59,11 @@ const fetchMarkdownContentWithCache = async (url: string) => {
   error.value = ''
 
   try {
-    // 使用带缓存的githubApi.ts中的函数获取文件信息，缓存时间为30分钟
     const response = await getGithubContentsWithCache(url, 30 * 60 * 1000)
     const data = response.data
 
-    // 获取文件名
     fileName.value = data.name || '文档'
 
-    // 正确解码Base64内容（支持UTF-8编码的中文字符）
     const binaryString = atob(data.content)
     const bytes = new Uint8Array(binaryString.length)
     for (let i = 0; i < binaryString.length; i++) {
@@ -79,7 +71,6 @@ const fetchMarkdownContentWithCache = async (url: string) => {
     }
     const content = new TextDecoder('utf-8').decode(bytes)
 
-    // 解析Markdown为HTML
     renderedContent.value = await renderMarkdownToHtml(content)
   } catch (err) {
     console.error('获取Markdown内容失败:', err)
@@ -99,16 +90,11 @@ const fetchMarkdownContent = async (url: string) => {
   error.value = ''
 
   try {
-    // 导入不带缓存的函数
-    const { getGithubContents } = await import('@/utils/apis/githubApi')
-    // 使用不带缓存的githubApi.ts中的函数获取文件信息
     const response = await getGithubContents(url)
     const data = response.data
 
-    // 获取文件名
     fileName.value = data.name || '文档'
 
-    // 正确解码Base64内容（支持UTF-8编码的中文字符）
     const binaryString = atob(data.content)
     const bytes = new Uint8Array(binaryString.length)
     for (let i = 0; i < binaryString.length; i++) {
@@ -116,7 +102,6 @@ const fetchMarkdownContent = async (url: string) => {
     }
     const content = new TextDecoder('utf-8').decode(bytes)
 
-    // 解析Markdown为HTML
     renderedContent.value = await renderMarkdownToHtml(content)
   } catch (err) {
     console.error('获取Markdown内容失败:', err)
@@ -126,24 +111,21 @@ const fetchMarkdownContent = async (url: string) => {
   }
 }
 
-// 刷新内容
 const refreshContent = () => {
   const url = route.query.url as string
   if (url) {
-    fetchMarkdownContent(url) // 刷新时强制获取最新内容，不使用缓存
+    fetchMarkdownContent(url)
   }
 }
 
-// 返回上一页
 const goBack = () => {
   router.go(-1)
 }
 
-// 组件挂载时获取内容
 onMounted(() => {
   const url = route.query.url as string
   if (url) {
-    fetchMarkdownContentWithCache(url) // 首次加载时使用30分钟缓存
+    fetchMarkdownContentWithCache(url)
   } else {
     error.value = '未提供文件URL'
   }
@@ -172,7 +154,6 @@ onMounted(() => {
   overflow: visible;
 }
 
-/* 玻璃拟态容器 */
 .glass-container {
   position: relative;
   z-index: 10;
@@ -223,7 +204,6 @@ onMounted(() => {
   }
 }
 
-/* 加载状态 */
 .loading-state {
   text-align: center;
   padding: 60px 20px;
@@ -248,7 +228,6 @@ onMounted(() => {
   }
 }
 
-/* 错误状态 */
 .error-state {
   text-align: center;
   padding: 60px 20px;
@@ -273,7 +252,6 @@ onMounted(() => {
   }
 }
 
-/* Markdown内容样式 */
 .markdown-content {
   color: white;
   line-height: 1.6;
