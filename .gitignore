@@ -56,11 +56,13 @@ Client/.env.test.local
 Client/.env.test.development
 Client/.env.test.production
 
-
 # Server
 Server/node_modules
 Server/dist
 
+# NodeServer
+NodeServer/github-proxy-api/node_modules/*
+NodeServer/github-proxy-api/.env
 
 ## else files
 .idea/fastRequest

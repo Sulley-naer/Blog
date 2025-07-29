@@ -72,7 +72,6 @@ const configuration = defineConfig({
   },
 })
 
-// mode 为当前环境 开发与生产 可通过变量实现动态替换配置
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
 
