@@ -6,10 +6,11 @@
         SuiKnit
       </router-link>
       <ul class="nav-links">
-        <li><a href="#notes" @click="scrollToSection('notes')">浏览笔记</a></li>
-        <li><a href="#about" @click="scrollToSection('about')">关于我们</a></li>
-        <li><a href="#coming-soon" @click="scrollToSection('coming-soon')">即将推出</a></li>
-        <li><a href="#contact" @click="scrollToSection('contact')">联系我们</a></li>
+        <li><router-link to="/notes">浏览笔记</router-link></li>
+        <li><router-link to="/about">关于</router-link></li>
+        <li><router-link to="/coming-soon">即将推出</router-link></li>
+        <!-- 修改：使用点击事件而不是路由跳转 -->
+        <li><a @click="goToContact">联系我们</a></li>
       </ul>
     </nav>
   </header>
@@ -18,6 +19,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// 定义触发跳转到联系页面的事件
+const emit = defineEmits(['navigate-to-contact'])
+
 const isScrolled = ref(false)
 const header = ref<HTMLElement | null>(null)
 
@@ -25,14 +29,9 @@ const handleScroll = () => {
   isScrolled.value = window.scrollY > 50
 }
 
-const scrollToSection = (sectionId: string) => {
-  const element = document.getElementById(sectionId)
-  if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    })
-  }
+// 新增：跳转到联系页面的方法
+function goToContact() {
+  emit('navigate-to-contact')
 }
 
 onMounted(() => {
@@ -83,6 +82,7 @@ onUnmounted(() => {
   i {
     background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 32px;
   }

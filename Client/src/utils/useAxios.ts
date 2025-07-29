@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { useCounterStore } from '@/stores/counter'; // 导入计数器存储
 
 // 缓存存储
 const cacheStore = new Map<string, { data: unknown; timestamp: number }>();
@@ -37,9 +38,18 @@ const createAxiosInstance = (options: {
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
+      
+      // 获取存储实例并在请求开始时调用 toggleAwaitLoad
+      const store = useCounterStore();
+      store.toggleAwaitLoad();
+      
       return config;
     },
     (error) => {
+      // 请求错误时也切换加载状态
+      const store = useCounterStore();
+      store.toggleAwaitLoad();
+      
       return Promise.reject(error);
     }
   );
@@ -47,6 +57,10 @@ const createAxiosInstance = (options: {
   // 响应拦截器
   instance.interceptors.response.use(
     (response: AxiosResponse) => {
+      // 请求成功完成时切换加载状态
+      const store = useCounterStore();
+      store.toggleAwaitLoad();
+      
       return response;
     },
     async (error) => {
@@ -68,6 +82,10 @@ const createAxiosInstance = (options: {
         // 重试请求
         return instance(config);
       }
+      
+      // 请求失败时也切换加载状态
+      const store = useCounterStore();
+      store.toggleAwaitLoad();
 
       return Promise.reject(error);
     }
@@ -99,21 +117,30 @@ export const getWithCache = async <T = unknown>(
     } as AxiosResponse<T>;
   }
 
-  // 创建实例并发送请求
-  const instance = createAxiosInstance();
+  // 获取存储实例并在请求开始时调用 toggleAwaitLoad
+  const store = useCounterStore();
+  store.toggleAwaitLoad();
 
-  // 如果没有提供 cacheTime，则使用实例的默认值
-  const _effectiveCacheTime = cacheTime ?? (instance as AxiosInstance & { defaultCacheTime: number }).defaultCacheTime ?? 5 * 60 * 1000;
+  try {
+    // 创建实例并发送请求
+    const instance = createAxiosInstance();
 
-  const response = await instance.get<T>(url, config);
+    // 如果没有提供 cacheTime，则使用实例的默认值
+    const _effectiveCacheTime = cacheTime ?? (instance as AxiosInstance & { defaultCacheTime: number }).defaultCacheTime ?? 5 * 60 * 1000;
 
-  // 缓存响应
-  cacheStore.set(cacheKey, {
-    data: response.data,
-    timestamp: Date.now()
-  });
+    const response = await instance.get<T>(url, config);
 
-  return response;
+    // 缓存响应
+    cacheStore.set(cacheKey, {
+      data: response.data,
+      timestamp: Date.now()
+    });
+
+    return response;
+  } finally {
+    // 请求完成时切换加载状态
+    store.toggleAwaitLoad();
+  }
 };
 
 // 清除缓存

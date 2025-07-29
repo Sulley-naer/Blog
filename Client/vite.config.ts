@@ -57,6 +57,11 @@ const configuration = defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/gh-proxy/, ''),
       },
+      '/github-api': {
+        target: 'https://api.github.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/github-api/, ''),
+      },
     },
   },
 })

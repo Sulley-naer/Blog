@@ -10,7 +10,7 @@
         <div class="contact-info">
           <div class="contact-item">
             <div class="contact-icon">
-              <img src="@/assets/images/homeIcon/email.png" alt="">
+              <img src="@/assets/images/icon/email.png" alt="">
             </div>
             <div class="contact-details">
               <h3>邮箱</h3>
@@ -20,7 +20,7 @@
 
           <div class="contact-item">
             <div class="contact-icon">
-              <img src="@/assets/images/homeIcon/phone.png" alt="">
+              <img src="@/assets/images/icon/phone.png" alt="">
             </div>
             <div class="contact-details">
               <h3>电话</h3>

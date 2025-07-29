@@ -1,8 +1,8 @@
 <template>
   <div class="homepage">
     <AnimatedParticles />
-    <HomeHeader />
-    <HomeSwiper />
+    <HomeHeader @navigate-to-contact="handleNavigateToContact(3)" />
+    <HomeSwiper ref="homeSwiperRef" />
     <HomeFooter />
   </div>
 </template>
@@ -13,11 +13,23 @@ defineOptions({
   name: 'HomePage',
 })
 
+import { ref } from 'vue'
 import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
 import HomeHeader from '@/components/homepage/HomeHeader.vue'
 import HomeSwiper from '@/components/homepage/HomeSwiper.vue'
 import HomeFooter from '@/components/homepage/HomeFooter.vue'
+
+// 获取Swiper组件的引用
+const homeSwiperRef = ref<InstanceType<typeof HomeSwiper> | null>(null)
+
+function handleNavigateToContact(index) {
+  if (homeSwiperRef.value) {
+    homeSwiperRef.value.goToSlide(index)
+  }
+}
 </script>
+
+<!-- ... 样式部分保持不变 ... -->
 
 <style scoped lang="scss">
   * {

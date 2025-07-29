@@ -15,7 +15,7 @@ console.log('路由跳转', isRouting.value)
 </script>
 
 <template>
-  <div class="w-full h-full relative">
+  <div class="w-full h-full relative overflow-auto">
     <firstLoad v-if="counterStore.onceLoad" />
     <Load />
     <RouterView />

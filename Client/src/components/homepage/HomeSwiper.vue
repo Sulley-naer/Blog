@@ -45,6 +45,12 @@ import AboutSection from './AboutSection.vue'
 import ServicesSection from './ServicesSection.vue'
 import ContactSection from './ContactSection.vue'
 
+// 定义暴露给父组件的方法
+defineExpose({
+  goToContactSlide,
+  goToSlide
+})
+
 const modules = [Mousewheel, Keyboard]
 
 const activeIndex = ref(0)
@@ -67,10 +73,15 @@ const onSlideChange = () => {
   }
 }
 
-const goToSlide = (index: number) => {
+function goToSlide(index: number){
   if (swiperInstance.value) {
     swiperInstance.value.slideTo(index)
   }
+}
+
+// 新增：跳转到联系页面的方法
+function goToContactSlide() {
+  goToSlide(3)
 }
 
 const handleNavigateToSlide = (index: number) => {
