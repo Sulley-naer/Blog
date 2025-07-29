@@ -1,5 +1,6 @@
 export interface GitHubContent {
   name: string
+  url: string
   path: string
   sha: string
   type: 'file' | 'dir'

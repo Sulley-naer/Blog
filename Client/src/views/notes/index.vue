@@ -84,155 +84,161 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({
-  name: 'NotesPage',
-})
+  defineOptions({
+    name: 'NotesPage',
+  })
 
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'  // 添加这行
-import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
-import RippleButton from '@/components/ui/RippleButton.vue'
-import { getGithubContents } from '@/utils/apis/githubApi'
+  import { ref, onMounted } from 'vue'
+  import { useRouter } from 'vue-router'
+  import AnimatedParticles from '@/components/decorative/AnimatedParticles.vue'
+  import RippleButton from '@/components/ui/RippleButton.vue'
+  import { getGithubContents, preloadFolderStructure } from '@/utils/apis/githubApi' // 添加 preloadFolderStructure 导入
 
-// 添加router实例
-const router = useRouter()
+  // 添加router实例
+  const router = useRouter()
 
-// GitHub内容接口定义
-interface GithubItem {
-  name: string
-  path: string
-  sha: string
-  size: number
-  url: string
-  html_url: string
-  git_url: string
-  download_url: string | null
-  type: 'file' | 'dir'
-  _links: {
-    self: string
-    git: string
-    html: string
-  }
-}
-
-// 响应式数据
-const githubContents = ref<GithubItem[]>([])
-const loading = ref<boolean>(false)
-const error = ref<string>('')
-const currentPath = ref<{name: string, path: string}[]>([])
-
-// 当前路径URL
-const currentUrl = ref<string>('https://api.github.com/repos/Sulley-naer/Naer-Notes/contents')
-
-// 获取GitHub内容
-const fetchGithubContents = async (url: string = currentUrl.value) => {
-  loading.value = true
-  error.value = ''
-
-  try {
-    const response = await getGithubContents(url)
-
-    // 过滤掉以特殊符号开头的文件和文件夹
-    const filteredContents = response.data.filter(item => {
-      // 检查名称是否以字母、数字、下划线或中文开头
-      return /^[a-zA-Z0-9_\u4e00-\u9fa5]/.test(item.name)
-    })
-
-    githubContents.value = filteredContents
-  } catch (err) {
-    console.error('获取GitHub内容失败:', err)
-    error.value = err.message || '获取内容时发生未知错误'
-  } finally {
-    loading.value = false
-  }
-}
-
-// 处理项目点击
-const handleItemClick = (item: GithubItem) => {
-  if (item.type === 'dir') {
-    // 更新当前路径
-    currentPath.value.push({ name: item.name, path: item.path })
-
-    // 更新URL并获取新内容
-    currentUrl.value = item.url
-    fetchGithubContents(item.url)
-  } else {
-    // 文件处理逻辑 - 跳转到showNotes页面
-    console.log('点击了文件:', item.name)
-    // 跳转到showNotes.vue并传递文件信息
-    router.push({
-      path: '/notes/showNotes',
-      query: {
-        url: item.url,  // 传递文件的API URL
-        name: item.name  // 传递文件名
-      }
-    })
-  }
-}
-
-// 导航到根目录
-const navigateToRoot = () => {
-  currentPath.value = []
-  currentUrl.value = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents'
-  fetchGithubContents()
-}
-
-// 导航到指定路径
-const navigateToPath = (index: number) => {
-  // 截取到指定索引的路径
-  currentPath.value = currentPath.value.slice(0, index + 1)
-
-  // 构造新的URL
-  const path = currentPath.value[index].path
-  currentUrl.value = `https://api.github.com/repos/Sulley-naer/Naer-Notes/contents/${path}`
-  fetchGithubContents(currentUrl.value)
-}
-
-// 刷新内容
-const refreshContent = () => {
-  fetchGithubContents()
-}
-
-// 获取项目图标
-/**
- * 根据文件类型获取对应的图标
- * @param item - GitHub项目对象
- * @returns 图标图片路径
- */
-const getItemIcon = (item: GithubItem) => {
-  if (item.type === 'dir') {
-    // 返回文件夹图标
-    return new URL('@/assets/images/icon/folder.png', import.meta.url).href
-  } else {
-    // 根据文件扩展名返回不同图标
-    const extension = item.name.split('.').pop()?.toLowerCase()
-    if (extension === 'md' || extension === 'markdown') {
-      // 返回Markdown文件图标
-      return new URL('@/assets/images/icon/md.png', import.meta.url).href
-    } else {
-      // 返回默认文件图标（可以添加更多文件类型判断）
-      return new URL('@/assets/images/icon/md.png', import.meta.url).href
+  // GitHub内容接口定义
+  interface GithubItem {
+    name: string
+    path: string
+    sha: string
+    size: number
+    url: string
+    html_url: string
+    git_url: string
+    download_url: string | null
+    type: 'file' | 'dir'
+    _links: {
+      self: string
+      git: string
+      html: string
     }
   }
-}
 
-// 处理新建笔记
-function handleCreateNote() {
-  console.log('创建新笔记')
-  // 后续可以在这里添加创建笔记的逻辑
-}
+  // 响应式数据
+  const githubContents = ref<GithubItem[]>([])
+  const loading = ref<boolean>(false)
+  const error = ref<string>('')
+  const currentPath = ref<{name: string, path: string}[]>([])
 
-// 处理筛选笔记
-function handleFilterNotes() {
-  console.log('筛选笔记')
-  // 后续可以在这里添加筛选笔记的逻辑
-}
+  // 当前路径URL
+  const currentUrl = ref<string>('https://api.github.com/repos/Sulley-naer/Naer-Notes/contents')
 
-// 组件挂载时获取初始内容
-onMounted(() => {
-  fetchGithubContents()
-})
-</script>
+  // 获取GitHub内容
+  const fetchGithubContents = async (url: string = currentUrl.value) => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const response = await getGithubContents(url)
+
+      // 过滤掉以特殊符号开头的文件和文件夹
+      const filteredContents = response.data.filter(item => {
+        // 检查名称是否以字母、数字、下划线或中文开头
+        return /^[a-zA-Z0-9_\u4e00-\u9fa5]/.test(item.name)
+      })
+
+      githubContents.value = filteredContents
+    } catch (err) {
+      console.error('获取GitHub内容失败:', err)
+      error.value = err.message || '获取内容时发生未知错误'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 处理项目点击
+  const handleItemClick = (item: GithubItem) => {
+    if (item.type === 'dir') {
+      // 更新当前路径
+      currentPath.value.push({ name: item.name, path: item.path })
+
+      // 更新URL并获取新内容
+      currentUrl.value = item.url
+      fetchGithubContents(item.url)
+    } else {
+      // 文件处理逻辑 - 跳转到showNotes页面
+      console.log('点击了文件:', item.name)
+      // 跳转到showNotes.vue并传递文件信息
+      router.push({
+        path: '/notes/showNotes',
+        query: {
+          url: item.url,  // 传递文件的API URL
+          name: item.name  // 传递文件名
+        }
+      })
+    }
+  }
+
+  // 导航到根目录
+  const navigateToRoot = () => {
+    currentPath.value = []
+    currentUrl.value = 'https://api.github.com/repos/Sulley-naer/Naer-Notes/contents'
+    fetchGithubContents()
+  }
+
+  // 导航到指定路径
+  const navigateToPath = (index: number) => {
+    // 截取到指定索引的路径
+    currentPath.value = currentPath.value.slice(0, index + 1)
+
+    // 构造新的URL
+    const path = currentPath.value[index].path
+    currentUrl.value = `https://api.github.com/repos/Sulley-naer/Naer-Notes/contents/${path}`
+    fetchGithubContents(currentUrl.value)
+  }
+
+  // 刷新内容
+  const refreshContent = () => {
+    fetchGithubContents()
+  }
+
+  // 获取项目图标
+  /**
+   * 根据文件类型获取对应的图标
+   * @param item - GitHub项目对象
+   * @returns 图标图片路径
+   */
+  const getItemIcon = (item: GithubItem) => {
+    if (item.type === 'dir') {
+      // 返回文件夹图标
+      return new URL('@/assets/images/icon/folder.png', import.meta.url).href
+    } else {
+      // 根据文件扩展名返回不同图标
+      const extension = item.name.split('.').pop()?.toLowerCase()
+      if (extension === 'md' || extension === 'markdown') {
+        // 返回Markdown文件图标
+        return new URL('@/assets/images/icon/md.png', import.meta.url).href
+      } else {
+        // 返回默认文件图标（可以添加更多文件类型判断）
+        return new URL('@/assets/images/icon/md.png', import.meta.url).href
+      }
+    }
+  }
+
+  // 处理新建笔记
+  function handleCreateNote() {
+    console.log('创建新笔记')
+    // 后续可以在这里添加创建笔记的逻辑
+  }
+
+  // 处理筛选笔记
+  function handleFilterNotes() {
+    console.log('筛选笔记')
+    // 后续可以在这里添加筛选笔记的逻辑
+  }
+
+  // 组件挂载时获取初始内容
+  onMounted(() => {
+    // 预加载文件夹结构
+    preloadFolderStructure().catch(err => {
+      console.warn('预加载文件夹结构失败:', err);
+    });
+
+    // 获取初始内容
+    fetchGithubContents()
+  })
+  </script>
 
 <style scoped lang="scss">
 .notes-page {
