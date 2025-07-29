@@ -19,8 +19,9 @@ const createAxiosInstance = (options: {
   timeout?: number;
   retries?: number;
   cacheTime?: number; // 这个参数现在会被正确使用
+  enableLoading?: boolean; // 添加可选的全局loading配置，默认为true
 } = {}): AxiosInstance => {
-  const { timeout = 5000, retries = 5, cacheTime = 5 * 60 * 1000 } = options;
+  const { timeout = 5000, retries = 5, cacheTime = 5 * 60 * 1000, enableLoading = true } = options;
 
   const instance = axios.create({
     timeout,
@@ -40,15 +41,19 @@ const createAxiosInstance = (options: {
       }
       
       // 获取存储实例并在请求开始时调用 toggleAwaitLoad
-      const store = useCounterStore();
-      store.toggleAwaitLoad();
+      if (enableLoading) { // 只有在启用loading时才调用
+        const store = useCounterStore();
+        store.toggleAwaitLoad();
+      }
       
       return config;
     },
     (error) => {
       // 请求错误时也切换加载状态
-      const store = useCounterStore();
-      store.toggleAwaitLoad();
+      if (enableLoading) { // 只有在启用loading时才调用
+        const store = useCounterStore();
+        store.toggleAwaitLoad();
+      }
       
       return Promise.reject(error);
     }
@@ -58,8 +63,10 @@ const createAxiosInstance = (options: {
   instance.interceptors.response.use(
     (response: AxiosResponse) => {
       // 请求成功完成时切换加载状态
-      const store = useCounterStore();
-      store.toggleAwaitLoad();
+      if (enableLoading) { // 只有在启用loading时才调用
+        const store = useCounterStore();
+        store.toggleAwaitLoad();
+      }
       
       return response;
     },
@@ -84,15 +91,18 @@ const createAxiosInstance = (options: {
       }
       
       // 请求失败时也切换加载状态
-      const store = useCounterStore();
-      store.toggleAwaitLoad();
+      if (enableLoading) { // 只有在启用loading时才调用
+        const store = useCounterStore();
+        store.toggleAwaitLoad();
+      }
 
       return Promise.reject(error);
     }
   );
 
-  // 将 cacheTime 附加到实例上，以便在 getWithCache 中使用
-  (instance as AxiosInstance & { defaultCacheTime: number }).defaultCacheTime = cacheTime;
+  // 将 cacheTime 和 enableLoading 附加到实例上，以便在 getWithCache 中使用
+  (instance as AxiosInstance & { defaultCacheTime: number; enableLoading: boolean }).defaultCacheTime = cacheTime;
+  (instance as AxiosInstance & { defaultCacheTime: number; enableLoading: boolean }).enableLoading = enableLoading;
 
   return instance;
 };
@@ -101,7 +111,8 @@ const createAxiosInstance = (options: {
 export const getWithCache = async <T = unknown>(
   url: string,
   config?: AxiosRequestConfig,
-  cacheTime?: number
+  cacheTime?: number,
+  enableLoading: boolean = true // 添加可选的全局loading配置，默认为true
 ): Promise<AxiosResponse<T>> => {
   const cacheKey = generateCacheKey({ ...config, method: 'GET', url });
 
@@ -118,12 +129,14 @@ export const getWithCache = async <T = unknown>(
   }
 
   // 获取存储实例并在请求开始时调用 toggleAwaitLoad
-  const store = useCounterStore();
-  store.toggleAwaitLoad();
+  if (enableLoading) { // 只有在启用loading时才调用
+    const store = useCounterStore();
+    store.toggleAwaitLoad();
+  }
 
   try {
     // 创建实例并发送请求
-    const instance = createAxiosInstance();
+    const instance = createAxiosInstance({ enableLoading }); // 传递enableLoading参数
 
     // 如果没有提供 cacheTime，则使用实例的默认值
     const _effectiveCacheTime = cacheTime ?? (instance as AxiosInstance & { defaultCacheTime: number }).defaultCacheTime ?? 5 * 60 * 1000;
@@ -139,7 +152,10 @@ export const getWithCache = async <T = unknown>(
     return response;
   } finally {
     // 请求完成时切换加载状态
-    store.toggleAwaitLoad();
+    if (enableLoading) { // 只有在启用loading时才调用
+      const store = useCounterStore();
+      store.toggleAwaitLoad();
+    }
   }
 };
 
