@@ -63,10 +63,10 @@ const fetchMarkdownContent = async (url: string) => {
     // 使用githubApi.ts中的函数获取文件信息
     const response = await getGithubContents(url)
     const data = response.data
-    
+
     // 获取文件名
     fileName.value = data.name || '文档'
-    
+
     // 正确解码Base64内容（支持UTF-8编码的中文字符）
     const binaryString = atob(data.content)
     const bytes = new Uint8Array(binaryString.length)
@@ -74,7 +74,7 @@ const fetchMarkdownContent = async (url: string) => {
       bytes[i] = binaryString.charCodeAt(i)
     }
     const content = new TextDecoder('utf-8').decode(bytes)
-    
+
     // 解析Markdown为HTML
     renderedContent.value = await renderMarkdownToHtml(content)
   } catch (err) {
@@ -131,7 +131,7 @@ onMounted(() => {
   overflow: visible;
 }
 
-/* Glassmorphism container */
+/* 玻璃拟态容器 */
 .glass-container {
   position: relative;
   z-index: 10;

@@ -19,7 +19,7 @@
   --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.05);
   --dropdown-divider-color: rgba(var(--text-color-rgb), 0.08);
 
-  --hljs-background: #fafafa;
+  --hljs-background: #f0f0f0; // 修改为更深的浅灰色
   --hljs-text: #383a42;
   --hljs-comment: #a0a1a7;
   --hljs-keyword: #a626a4;
@@ -73,7 +73,7 @@ html.dark {
   --dropdown-item-hover-bg: rgba(var(--text-color-rgb), 0.1);
   --dropdown-divider-color: rgba(var(--text-color-rgb), 0.12);
 
-  --hljs-background: #282c34;
+  --hljs-background: #282c34; // 深色主题保持不变
   --hljs-text: #abb2bf;
   --hljs-comment: #5c6370;
   --hljs-keyword: #c678dd;

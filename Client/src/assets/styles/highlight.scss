@@ -3,70 +3,105 @@
   它不带 scoped，因此可以作用于 v-html 动态渲染出的内容。
 */
 .post-content pre code.hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 1.25em;
-    color: var(--hljs-text);
-    background: var(--hljs-background);
-    border-radius: 8px;
-    // 为颜色切换添加平滑的过渡效果
-    transition: color 0.3s ease, background-color 0.3s ease;
-  }
-  
-  .post-content .hljs-comment,
-  .post-content .hljs-quote {
-    color: var(--hljs-comment);
-    font-style: italic;
-  }
-  
-  .post-content .hljs-variable,
-  .post-content .hljs-template-variable,
-  .post-content .hljs-attr,
-  .post-content .hljs-regexp,
-  .post-content .hljs-link,
-  .post-content .hljs-name,
-  .post-content .hljs-selector-id,
-  .post-content .hljs-selector-class {
-    color: var(--hljs-tag);
-  }
-  
-  .post-content .hljs-number,
-  .post-content .hljs-literal,
-  .post-content .hljs-built_in,
-  .post-content .hljs-type {
-    color: var(--hljs-number);
-  }
-  
-  .post-content .hljs-keyword,
-  .post-content .hljs-selector-tag {
-    color: var(--hljs-keyword);
-  }
-  
-  .post-content .hljs-string,
-  .post-content .hljs-deletion,
-  .post-content .hljs-symbol,
-  .post-content .hljs-bullet {
-    color: var(--hljs-string);
-  }
-  
-  .post-content .hljs-title,
-  .post-content .hljs-class .hljs-title,
-  .post-content .hljs-section {
-    color: var(--hljs-class);
-  }
-  
-  .post-content .hljs-title.function_ {
-    color: var(--hljs-function);
-  }
-  
-  .post-content .hljs-attribute {
-    color: var(--hljs-attribute);
-  }
-  
-  .post-content .hljs-emphasis {
-    font-style: italic;
-  }
-  
-  .post-content .hljs-strong {
-    font-weight: bold;
-  }
+  display: block;
+  overflow-x: auto;
+  padding: 1.25em;
+  color: var(--hljs-text);
+  background: var(--hljs-background);
+  border-radius: 8px;
+  // 为颜色切换添加平滑的过渡效果
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.post-content .hljs-comment,
+.post-content .hljs-quote {
+  color: var(--hljs-comment);
+  font-style: italic;
+}
+
+.post-content .hljs-variable,
+.post-content .hljs-template-variable,
+.post-content .hljs-attr,
+.post-content .hljs-regexp,
+.post-content .hljs-link,
+.post-content .hljs-name,
+.post-content .hljs-selector-id,
+.post-content .hljs-selector-class {
+  color: var(--hljs-tag);
+}
+
+.post-content .hljs-number,
+.post-content .hljs-literal,
+.post-content .hljs-built_in,
+.post-content .hljs-type {
+  color: var(--hljs-number);
+}
+
+.post-content .hljs-keyword,
+.post-content .hljs-selector-tag {
+  color: var(--hljs-keyword);
+}
+
+.post-content .hljs-string,
+.post-content .hljs-deletion,
+.post-content .hljs-symbol,
+.post-content .hljs-bullet {
+  color: var(--hljs-string);
+}
+
+.post-content .hljs-title,
+.post-content .hljs-class .hljs-title,
+.post-content .hljs-section {
+  color: var(--hljs-class);
+}
+
+.post-content .hljs-title.function_ {
+  color: var(--hljs-function);
+}
+
+.post-content .hljs-attribute {
+  color: var(--hljs-attribute);
+}
+
+.post-content .hljs-emphasis {
+  font-style: italic;
+}
+
+.post-content .hljs-strong {
+  font-weight: bold;
+}
+
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-left: 0.25em solid #d0d7de;
+}
+
+/* 不同类型的警告样式 */
+.markdown-alert-note {
+  border-left-color: #0969da;
+  background-color: #079bdf5d; // 蓝色背景
+}
+
+.markdown-alert-tip {
+  border-left-color: #1a7f37;
+  background-color: #17ea4c5e; // 绿色背景
+}
+
+// 其他类型的警告样式保持不变
+.markdown-alert-important {
+  border-left-color: #8250df;
+  background-color: #4f12e84f;
+}
+
+.markdown-alert-warning {
+  border-left-color: #9a6700;
+  background-color: #fff8c5;
+}
+
+.markdown-alert-caution {
+  border-left-color: #cf222e;
+  background-color: #ffebe9;
+}
